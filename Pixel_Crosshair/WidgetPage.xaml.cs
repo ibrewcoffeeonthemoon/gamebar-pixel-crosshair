@@ -20,9 +20,9 @@ namespace Pixel_Crosshair
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Widget1 : Page
+    public sealed partial class WidgetPage : Page
     {
-        public Widget1()
+        public WidgetPage()
         {
             this.InitializeComponent();
         }
