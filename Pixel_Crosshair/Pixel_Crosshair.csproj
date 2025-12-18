@@ -7,8 +7,8 @@
     <ProjectGuid>{94D05A38-04B0-4EA4-AD28-4ADFE4719E84}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WidgetSampleCS</RootNamespace>
-    <AssemblyName>WidgetSampleCS</AssemblyName>
+    <RootNamespace>Pixel_Crosshair</RootNamespace>
+    <AssemblyName>Pixel_Crosshair</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.26100.0</TargetPlatformVersion>

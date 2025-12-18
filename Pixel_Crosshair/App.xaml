@@ -1,5 +1,5 @@
 ﻿<Application
-    x:Class="WidgetSampleCS.App"
+    x:Class="Pixel_Crosshair.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:WidgetSampleCS" />
+    xmlns:local="using:Pixel_Crosshair" />
