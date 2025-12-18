@@ -45,8 +45,8 @@
         <uap3:Extension Category="windows.appExtension">
           <uap3:AppExtension Name="microsoft.gameBarUIExtension"
                              Id="Widget1"
-                             DisplayName="Widget Sample CS"
-                             Description="Widget Sample CS Description"
+                             DisplayName="Pixel Crosshair"
+                             Description="Gamebar Pixel Crosshair Widget"
                              PublicFolder="GameBar">
             <uap3:Properties>
               <GameBarWidget Type="Standard">
