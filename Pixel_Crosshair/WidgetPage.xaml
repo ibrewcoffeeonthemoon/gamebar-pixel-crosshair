@@ -30,7 +30,9 @@
 				/>
 		</StackPanel>
 
-		<Grid Grid.Column="1">
+		<Grid
+			Grid.Column="1"
+			>
 			<Grid 
 				HorizontalAlignment="Center" 
 				VerticalAlignment="Center" 
@@ -57,13 +59,19 @@
                 Click="OnCenterAppButtonClick" 
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Bottom"
-                Margin="0,0,0,20">
+				CornerRadius="10"
+				Padding="10"
+                Margin="10">
 				Center App
 			</Button>
 		</Grid>
+
 		<StackPanel 
 			x:Name="RightStackPanel"
-			Grid.Column="2" VerticalAlignment="Center" Margin="20">
+			Grid.Column="2" 
+			VerticalAlignment="Center" 
+			Margin="20"
+			>
 			<TextBlock 
 				Text="Matrix Editor Coming Soon..." 
                 HorizontalAlignment="Center" 
