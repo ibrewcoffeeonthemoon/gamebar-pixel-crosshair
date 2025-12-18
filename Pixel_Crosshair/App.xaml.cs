@@ -73,7 +73,7 @@ namespace Pixel_Crosshair
                         widgetArgs,
                         Window.Current.CoreWindow,
                         rootFrame);
-                    rootFrame.Navigate(typeof(WidgetPage));
+                    rootFrame.Navigate(typeof(WidgetPage), widget);
 
                     Window.Current.Closed += WidgetWindow_Closed;
 
