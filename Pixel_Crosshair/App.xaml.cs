@@ -23,7 +23,7 @@ namespace Pixel_Crosshair
     /// </summary>
     sealed partial class App : Application
     {
-        private XboxGameBarWidget widget1 = null;
+        private XboxGameBarWidget widget = null;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -79,13 +79,13 @@ namespace Pixel_Crosshair
                     Window.Current.Content = rootFrame;
 
                     // Create Game Bar widget object which bootstraps the connection with Game Bar
-                    widget1 = new XboxGameBarWidget(
+                    widget = new XboxGameBarWidget(
                         widgetArgs,
                         Window.Current.CoreWindow,
                         rootFrame);
                     rootFrame.Navigate(typeof(WidgetPage));
 
-                    Window.Current.Closed += Widget1Window_Closed;
+                    Window.Current.Closed += WidgetWindow_Closed;
 
                     Window.Current.Activate();
                 }
@@ -96,10 +96,10 @@ namespace Pixel_Crosshair
             }
         }
 
-        private void Widget1Window_Closed(object sender, Windows.UI.Core.CoreWindowEventArgs e)
+        private void WidgetWindow_Closed(object sender, Windows.UI.Core.CoreWindowEventArgs e)
         {
-            widget1 = null;
-            Window.Current.Closed -= Widget1Window_Closed;
+            widget = null;
+            Window.Current.Closed -= WidgetWindow_Closed;
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace Pixel_Crosshair
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
-            widget1 = null;
+            widget = null;
 
             deferral.Complete();
         }
