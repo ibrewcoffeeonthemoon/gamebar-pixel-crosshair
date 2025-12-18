@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using Microsoft.Gaming.XboxGameBar;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -23,12 +23,22 @@ namespace Pixel_Crosshair
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             widget = e.Parameter as XboxGameBarWidget;
+
+			widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
+		}
+
+        private void OnGameBarDisplayModeChanged(XboxGameBarWidget sender, object args)
+        {
+            var isPinned = sender.GameBarDisplayMode == XboxGameBarDisplayMode.PinnedOnly;
+            _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                ControlStackPanel.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
+            });
         }
 
-		private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e)
+        private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e)
 		{
 			await widget.CenterWindowAsync();
 		}
-
 	}
 }

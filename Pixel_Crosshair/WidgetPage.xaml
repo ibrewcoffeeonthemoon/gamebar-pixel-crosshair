@@ -29,7 +29,11 @@
 			<Rectangle Grid.Row="1" Grid.Column="1" Fill="Red" Width="1" Height="1"/>
 		</Grid>
 
-		<StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
+		<StackPanel 
+			x:Name="ControlStackPanel" 
+			HorizontalAlignment="Center"
+			VerticalAlignment="Bottom"
+			Margin="0,0,0,20">
 			<Button x:Name="CenterAppButton" Click="OnCenterAppButtonClick">Center App</Button>
 		</StackPanel>
 	</Grid>
