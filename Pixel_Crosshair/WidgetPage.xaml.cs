@@ -32,7 +32,9 @@ namespace Pixel_Crosshair
             var isPinned = sender.GameBarDisplayMode == XboxGameBarDisplayMode.PinnedOnly;
             _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                ControlStackPanel.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
+                CenterAppButton.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
+                LeftStackPanel.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
+                RightStackPanel.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
             });
         }
 
