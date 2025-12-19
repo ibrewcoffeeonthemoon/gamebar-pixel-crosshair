@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.Gaming.XboxGameBar;
+using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -26,10 +28,20 @@ namespace Pixel_Crosshair
         {
             widget = e.Parameter as XboxGameBarWidget;
 
+            LoadSettings();
+
             widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
 
 			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
         }
+
+		void LoadSettings()
+		{
+			var settings = ApplicationData.Current.LocalSettings;
+			string colorStr = settings.Values["CrosshairColor"].ToString();
+			var color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
+            ChangeCrosshairColor(color);
+		}
 
         private void OnGameBarDisplayModeChanged(XboxGameBarWidget sender, object args)
         {
@@ -64,5 +76,15 @@ namespace Pixel_Crosshair
 			}
 
 		}
+
+        private void ChangeCrosshairColor(Color color)
+        {
+			// Update all Rectangles inside the CrosshairContainer
+			foreach (var child in CrosshairPreviewGrid.Children)
+			{
+                if (child is Rectangle rect)
+                    rect.Fill = new SolidColorBrush(color);
+			}
+        }
     }
 }
