@@ -81,8 +81,10 @@
               <GameBarWidget Type="Settings">
                 <Window>
                   <Size>
-                    <Height>400</Height>
-                    <Width>500</Width>
+                    <Height>600</Height>
+                    <Width>800</Width>
+                    <MinHeight>600</MinHeight>
+                    <MinWidth>800</MinWidth>
                   </Size>
                   <ResizeSupported>
                     <Horizontal>true</Horizontal>

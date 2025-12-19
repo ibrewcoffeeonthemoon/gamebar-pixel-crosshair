@@ -28,7 +28,7 @@ namespace Pixel_Crosshair
 
             widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
 
-			widget.SettingsClicked += Widget_SettingsClicked;
+			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
         }
 
         private void OnGameBarDisplayModeChanged(XboxGameBarWidget sender, object args)
@@ -47,7 +47,7 @@ namespace Pixel_Crosshair
             await widget.CenterWindowAsync();
         }
 
-		private async void Widget_SettingsClicked(XboxGameBarWidget sender, object args)
+		private async void OnWidgetSettingsButtonClicked(XboxGameBarWidget sender, object args)
 		{
             // if necessary pre-configure any required data needed by the settings widget prior to activation
             // ...

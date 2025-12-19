@@ -14,9 +14,5 @@ namespace Pixel_Crosshair
         {
             this.InitializeComponent();
         }
-        private void MyButton_Click(object sender, RoutedEventArgs e)
-        {
-            myButton.Content = "Clicked";
-        }
     }
 }

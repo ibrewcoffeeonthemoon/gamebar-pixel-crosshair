@@ -13,9 +13,21 @@
         <StackPanel
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Orientation="Vertical">
-            <TextBlock Padding="0,0,0,5" Text="Widget Settings" />
-            <Button x:Name="myButton" Click="MyButton_Click">Click Me</Button>
+            Orientation="Horizontal"
+            Spacing="20"
+            >
+			<ColorPicker 
+				x:Name="MyColorPicker"
+				IsColorSliderVisible="True"
+				IsHexInputVisible="True"
+				IsColorChannelTextInputVisible="True"
+				IsColorSpectrumVisible="True"
+				ColorSpectrumShape="Box"
+				/>
+			<TextBlock 
+				Text="Matrix Editor Coming Soon..." 
+                HorizontalAlignment="Center" 
+                Foreground="Gray"/>
         </StackPanel>
     </Grid>
 </Page>
