@@ -25,10 +25,6 @@
 				ColorSpectrumShape="Box"
                 ColorChanged="OnColorPickerColorChanged"
 				/>
-			<TextBlock 
-				Text="Matrix Editor Coming Soon..." 
-                HorizontalAlignment="Center" 
-                Foreground="Gray"/>
         </StackPanel>
     </Grid>
 </Page>

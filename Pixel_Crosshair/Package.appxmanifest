@@ -62,8 +62,8 @@
                     <MinWidth>230</MinWidth>
                   </Size>
                   <ResizeSupported>
-                    <Horizontal>true</Horizontal>
-                    <Vertical>true</Vertical>
+                    <Horizontal>false</Horizontal>
+                    <Vertical>false</Vertical>
                   </ResizeSupported>
                 </Window>
               </GameBarWidget>
@@ -82,13 +82,13 @@
                 <Window>
                   <Size>
                     <Height>600</Height>
-                    <Width>800</Width>
+                    <Width>500</Width>
                     <MinHeight>600</MinHeight>
-                    <MinWidth>800</MinWidth>
+                    <MinWidth>500</MinWidth>
                   </Size>
                   <ResizeSupported>
-                    <Horizontal>true</Horizontal>
-                    <Vertical>true</Vertical>
+                    <Horizontal>false</Horizontal>
+                    <Vertical>false</Vertical>
                   </ResizeSupported>
                 </Window>
               </GameBarWidget>
