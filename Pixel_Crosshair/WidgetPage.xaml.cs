@@ -31,8 +31,6 @@ namespace Pixel_Crosshair
         {
 			// get the widget instance
 			widget = e.Parameter as XboxGameBarWidget;
-			// listen to display mode changes to update UI accordingly
-			widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
 			// initial update of UI based on current display mode
 			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
 
@@ -48,17 +46,6 @@ namespace Pixel_Crosshair
         {
 			// must clean up old event handlers to avoid multiple subscriptions when the widget is reopened
 			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
-        }
-
-        private void OnGameBarDisplayModeChanged(XboxGameBarWidget sender, object args)
-        {
-			// determined if the widget is pinned or not
-			var isPinned = sender.GameBarDisplayMode == XboxGameBarDisplayMode.PinnedOnly;
-			// if pinned, hide the center button, otherwise show it
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                CenterAppButton.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
-            });
         }
 
         private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e)
