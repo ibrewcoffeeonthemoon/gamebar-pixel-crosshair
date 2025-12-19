@@ -17,12 +17,13 @@
             Spacing="20"
             >
 			<ColorPicker 
-				x:Name="MyColorPicker"
+				x:Name="ColorPicker"
 				IsColorSliderVisible="True"
 				IsHexInputVisible="True"
 				IsColorChannelTextInputVisible="True"
 				IsColorSpectrumVisible="True"
 				ColorSpectrumShape="Box"
+                ColorChanged="OnColorPickerColorChanged"
 				/>
 			<TextBlock 
 				Text="Matrix Editor Coming Soon..." 

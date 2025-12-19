@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -13,6 +14,20 @@ namespace Pixel_Crosshair
         public WidgetSettingsPage()
         {
             this.InitializeComponent();
+            LoadSettings();
         }
-    }
+
+		void LoadSettings()
+		{
+			var settings = ApplicationData.Current.LocalSettings;
+			string colorStr = settings.Values["CrosshairColor"].ToString();
+			ColorPicker.Color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
+		}
+
+        private async void OnColorPickerColorChanged(object sender, ColorChangedEventArgs e)
+        {
+			var settings = ApplicationData.Current.LocalSettings;
+            settings.Values["CrosshairColor"] = ColorPicker.Color.ToString();
+		}
+	}
 }
