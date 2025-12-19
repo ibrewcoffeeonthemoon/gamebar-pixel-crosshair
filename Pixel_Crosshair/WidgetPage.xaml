@@ -6,77 +6,37 @@
     xmlns:local="using:Pixel_Crosshair"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
 	<Grid Background="Transparent">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="500"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="500"/>
-		</Grid.ColumnDefinitions>
-
-		<StackPanel 
-			x:Name="LeftStackPanel"
-			Grid.Column="0" 
+		<Grid 
+			x:Name="CrosshairPreviewGrid"
+			HorizontalAlignment="Center" 
 			VerticalAlignment="Center" 
-			>
-			<ColorPicker 
-				x:Name="MyColorPicker"
-				IsColorSliderVisible="True"
-				IsHexInputVisible="True"
-				IsColorChannelTextInputVisible="True"
-				IsColorSpectrumVisible="True"
-				ColorSpectrumShape="Box"
-				ColorChanged="OnColorPickerColorChanged"
-				/>
-		</StackPanel>
+			Width="2" 
+			Height="2"
+			IsHitTestVisible="False">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="1*"/>
+				<RowDefinition Height="1*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="1*"/>
+				<ColumnDefinition Width="1*"/>
+			</Grid.ColumnDefinitions>
 
-		<Grid
-			Grid.Column="1"
-			>
-			<Grid 
-				x:Name="CrosshairPreviewGrid"
-				HorizontalAlignment="Center" 
-				VerticalAlignment="Center" 
-				Width="2" 
-				Height="2"
-				IsHitTestVisible="False">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="1*"/>
-					<RowDefinition Height="1*"/>
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="1*"/>
-					<ColumnDefinition Width="1*"/>
-				</Grid.ColumnDefinitions>
-
-				<Rectangle Grid.Row="0" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
-				<Rectangle Grid.Row="0" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
-				<Rectangle Grid.Row="1" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
-				<Rectangle Grid.Row="1" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
-			</Grid>
-
-			<Button 
-				x:Name="CenterAppButton" 
-                Click="OnCenterAppButtonClick" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Bottom"
-				CornerRadius="10"
-				Padding="10"
-                Margin="10">
-				Center App
-			</Button>
+			<Rectangle Grid.Row="0" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
+			<Rectangle Grid.Row="0" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
+			<Rectangle Grid.Row="1" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
+			<Rectangle Grid.Row="1" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
 		</Grid>
-
-		<StackPanel 
-			x:Name="RightStackPanel"
-			Grid.Column="2" 
-			VerticalAlignment="Center" 
-			Margin="20"
-			>
-			<TextBlock 
-				Text="Matrix Editor Coming Soon..." 
-                HorizontalAlignment="Center" 
-                Foreground="Gray"/>
-		</StackPanel>
+		<Button 
+			x:Name="CenterAppButton" 
+			Click="OnCenterAppButtonClick" 
+			HorizontalAlignment="Stretch" 
+			VerticalAlignment="Bottom"
+			CornerRadius="10"
+			Padding="10"
+			Margin="10">
+			Center App
+		</Button>
 	</Grid>
 </Page>

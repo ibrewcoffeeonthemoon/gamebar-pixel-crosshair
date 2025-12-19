@@ -1,8 +1,11 @@
 ﻿using System;
 using Microsoft.Gaming.XboxGameBar;
+using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
@@ -27,6 +30,20 @@ namespace Pixel_Crosshair
             widget = e.Parameter as XboxGameBarWidget;
 
             widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
+
+            widget.SettingsClicked += OnWidgetSettingsButtonClicked;
+			// listen to application data changes
+			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
+			// simulate a data change to load initial settings
+			ApplicationData.Current.SignalDataChanged();
+			// listen to close request to clean up old event handlers from previous instances
+			widget.CloseRequested += OnWidgetCloseRequested;
+		}
+
+        private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args)
+        {
+			// must clean up old event handlers to avoid multiple subscriptions when the widget is reopened
+			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
         }
 
         private void OnGameBarDisplayModeChanged(XboxGameBarWidget sender, object args)
@@ -35,8 +52,6 @@ namespace Pixel_Crosshair
             _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 CenterAppButton.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
-                LeftStackPanel.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
-                RightStackPanel.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
             });
         }
 
@@ -45,17 +60,29 @@ namespace Pixel_Crosshair
             await widget.CenterWindowAsync();
         }
 
-        private async void OnColorPickerColorChanged(object sender, ColorChangedEventArgs e)
-        {
-			// Use a SolidColorBrush with the new color
-			SolidColorBrush newBrush = new SolidColorBrush(e.NewColor);
-			// Update all Rectangles inside the CrosshairContainer
-			foreach (var child in CrosshairPreviewGrid.Children)
-			{
-				if (child is Rectangle rect)
-					rect.Fill = newBrush;
-			}
-
+		private async void OnWidgetSettingsButtonClicked(XboxGameBarWidget sender, object args)
+		{
+            // if necessary pre-configure any required data needed by the settings widget prior to activation
+            // ...
+            await sender.ActivateSettingsAsync();
 		}
+
+        private void OnApplicationDataChanged(ApplicationData sender, object args)
+        {
+			// let the UI thread handle the update and also fetch the settings from application data
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				// fetch data from application data and convert to Color object
+				var settings = ApplicationData.Current.LocalSettings;
+				string colorStr = settings.Values["CrosshairColor"].ToString();
+				var color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
+				// update UI, set all rectangles in the preview grid to the new color
+				foreach (var child in CrosshairPreviewGrid.Children)
+				{
+					if (child is Rectangle rect)
+						rect.Fill = new SolidColorBrush(color);
+				}
+			});
+        }
     }
 }

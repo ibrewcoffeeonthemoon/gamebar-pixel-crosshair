@@ -52,13 +52,39 @@
               <GameBarWidget Type="Standard">
                 <HomeMenuVisible>true</HomeMenuVisible>
                 <PinningSupported>true</PinningSupported>
+                <SettingsSupported AppExtensionId="WidgetSettings" />
                 <FavoriteAfterInstall>true</FavoriteAfterInstall>
                 <Window>
                   <Size>
-                    <Height>650</Height>
-                    <Width>1200</Width>
-                    <MinHeight>650</MinHeight>
-                    <MinWidth>1200</MinWidth>
+                    <Height>250</Height>
+                    <Width>250</Width>
+                    <MinHeight>250</MinHeight>
+                    <MinWidth>250</MinWidth>
+                  </Size>
+                  <ResizeSupported>
+                    <Horizontal>true</Horizontal>
+                    <Vertical>true</Vertical>
+                  </ResizeSupported>
+                </Window>
+              </GameBarWidget>
+            </uap3:Properties>
+          </uap3:AppExtension>
+        </uap3:Extension>
+        <!-- Widget Settings (Also a widget of separate type) -->
+        <uap3:Extension Category="windows.appExtension">
+          <uap3:AppExtension Name="microsoft.gameBarUIExtension"
+                             Id="WidgetSettings"
+                             DisplayName="Pixel Crosshair Settings"
+                             Description="Gamebar Pixel Crosshair Widget Settings"
+                             PublicFolder="Gamebar">
+            <uap3:Properties>
+              <GameBarWidget Type="Settings">
+                <Window>
+                  <Size>
+                    <Height>600</Height>
+                    <Width>800</Width>
+                    <MinHeight>600</MinHeight>
+                    <MinWidth>800</MinWidth>
                   </Size>
                   <ResizeSupported>
                     <Horizontal>true</Horizontal>
