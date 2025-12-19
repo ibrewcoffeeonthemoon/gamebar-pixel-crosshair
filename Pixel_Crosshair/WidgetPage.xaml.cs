@@ -37,8 +37,6 @@ namespace Pixel_Crosshair
             _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 CenterAppButton.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
-                LeftStackPanel.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
-                RightStackPanel.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
             });
         }
 
