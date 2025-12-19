@@ -31,17 +31,18 @@ namespace Pixel_Crosshair
 
             widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
 
-			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
-
-            widget.CloseRequested += OnWidgetCloseRequested;
-
-            ApplicationData.Current.DataChanged += OnApplicationDataChanged;
-
+            widget.SettingsClicked += OnWidgetSettingsButtonClicked;
+			// listen to application data changes
+			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
+			// simulate a data change to load initial settings
 			ApplicationData.Current.SignalDataChanged();
+			// listen to close request to clean up old event handlers from previous instances
+			widget.CloseRequested += OnWidgetCloseRequested;
 		}
 
         private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args)
         {
+			// must clean up old event handlers to avoid multiple subscriptions when the widget is reopened
 			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
         }
 
@@ -68,12 +69,14 @@ namespace Pixel_Crosshair
 
         private void OnApplicationDataChanged(ApplicationData sender, object args)
         {
+			// let the UI thread handle the update and also fetch the settings from application data
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
+				// fetch data from application data and convert to Color object
 				var settings = ApplicationData.Current.LocalSettings;
 				string colorStr = settings.Values["CrosshairColor"].ToString();
 				var color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
-				// Update all Rectangles inside the CrosshairContainer
+				// update UI, set all rectangles in the preview grid to the new color
 				foreach (var child in CrosshairPreviewGrid.Children)
 				{
 					if (child is Rectangle rect)
