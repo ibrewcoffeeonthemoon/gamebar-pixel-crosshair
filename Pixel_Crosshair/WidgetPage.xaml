@@ -8,33 +8,75 @@
     mc:Ignorable="d">
 
 	<Grid Background="Transparent">
-		<Grid 
-			HorizontalAlignment="Center" 
-            VerticalAlignment="Center" 
-            Width="2" 
-            Height="2"
-            IsHitTestVisible="False">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="1*"/>
-				<RowDefinition Height="1*"/>
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="1*"/>
-				<ColumnDefinition Width="1*"/>
-			</Grid.ColumnDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="500"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="500"/>
+		</Grid.ColumnDefinitions>
 
-			<Rectangle Grid.Row="0" Grid.Column="0" Fill="Red" Width="1" Height="1"/>
-			<Rectangle Grid.Row="0" Grid.Column="1" Fill="Red" Width="1" Height="1"/>
-			<Rectangle Grid.Row="1" Grid.Column="0" Fill="Red" Width="1" Height="1"/>
-			<Rectangle Grid.Row="1" Grid.Column="1" Fill="Red" Width="1" Height="1"/>
+		<StackPanel 
+			x:Name="LeftStackPanel"
+			Grid.Column="0" 
+			VerticalAlignment="Center" 
+			>
+			<ColorPicker 
+				x:Name="MyColorPicker"
+				IsColorSliderVisible="True"
+				IsHexInputVisible="True"
+				IsColorChannelTextInputVisible="True"
+				IsColorSpectrumVisible="True"
+				ColorSpectrumShape="Box"
+				ColorChanged="OnColorPickerColorChanged"
+				/>
+		</StackPanel>
+
+		<Grid
+			Grid.Column="1"
+			>
+			<Grid 
+				x:Name="CrosshairPreviewGrid"
+				HorizontalAlignment="Center" 
+				VerticalAlignment="Center" 
+				Width="2" 
+				Height="2"
+				IsHitTestVisible="False">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="1*"/>
+					<RowDefinition Height="1*"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*"/>
+					<ColumnDefinition Width="1*"/>
+				</Grid.ColumnDefinitions>
+
+				<Rectangle Grid.Row="0" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
+				<Rectangle Grid.Row="0" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
+				<Rectangle Grid.Row="1" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
+				<Rectangle Grid.Row="1" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
+			</Grid>
+
+			<Button 
+				x:Name="CenterAppButton" 
+                Click="OnCenterAppButtonClick" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Bottom"
+				CornerRadius="10"
+				Padding="10"
+                Margin="10">
+				Center App
+			</Button>
 		</Grid>
 
 		<StackPanel 
-			x:Name="ControlStackPanel" 
-			HorizontalAlignment="Center"
-			VerticalAlignment="Bottom"
-			Margin="0,0,0,20">
-			<Button x:Name="CenterAppButton" Click="OnCenterAppButtonClick">Center App</Button>
+			x:Name="RightStackPanel"
+			Grid.Column="2" 
+			VerticalAlignment="Center" 
+			Margin="20"
+			>
+			<TextBlock 
+				Text="Matrix Editor Coming Soon..." 
+                HorizontalAlignment="Center" 
+                Foreground="Gray"/>
 		</StackPanel>
 	</Grid>
 </Page>

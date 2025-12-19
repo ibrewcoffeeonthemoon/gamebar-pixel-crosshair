@@ -55,12 +55,10 @@
                 <FavoriteAfterInstall>true</FavoriteAfterInstall>
                 <Window>
                   <Size>
-                    <Height>300</Height>
-                    <Width>400</Width>
-                    <MinHeight>150</MinHeight>
-                    <MinWidth>200</MinWidth>
-                    <MaxHeight>350</MaxHeight>
-                    <MaxWidth>450</MaxWidth>
+                    <Height>650</Height>
+                    <Width>1200</Width>
+                    <MinHeight>650</MinHeight>
+                    <MinWidth>1200</MinWidth>
                   </Size>
                   <ResizeSupported>
                     <Horizontal>true</Horizontal>
