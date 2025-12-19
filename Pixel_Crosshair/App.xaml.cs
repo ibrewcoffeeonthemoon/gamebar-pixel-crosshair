@@ -14,6 +14,7 @@ namespace Pixel_Crosshair
     sealed partial class App : Application
     {
         private XboxGameBarWidget widget = null;
+		private XboxGameBarWidget widgetSettings = null;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -64,20 +65,39 @@ namespace Pixel_Crosshair
                 //
                 if (widgetArgs.IsLaunchActivation)
                 {
-                    var rootFrame = new Frame();
-                    rootFrame.NavigationFailed += OnNavigationFailed;
-                    Window.Current.Content = rootFrame;
+					var rootFrame = new Frame();
+					Window.Current.Content = rootFrame;
 
-                    // Create Game Bar widget object which bootstraps the connection with Game Bar
-                    widget = new XboxGameBarWidget(
-                        widgetArgs,
-                        Window.Current.CoreWindow,
-                        rootFrame);
-                    rootFrame.Navigate(typeof(WidgetPage), widget);
+					// Navigate to correct view, the AppExtensionId should match the widget you wish to create and activate. 
+					// The activation of a settings widget is no different from other widgets.
+					if (widgetArgs.AppExtensionId == "Widget")
+					{
+						// This is the parent widget activation.
+						widget = new XboxGameBarWidget(
+							widgetArgs,
+							Window.Current.CoreWindow,
+							rootFrame);
+						rootFrame.Navigate(typeof(WidgetPage), widget);
 
-                    Window.Current.Closed += WidgetWindow_Closed;
+						Window.Current.Closed += WidgetWindow_Closed;
+					}
+					else if (widgetArgs.AppExtensionId == "WidgetSettings")
+					{
+						// This is the settings widget, the AppExtensionId should match your widget parameters as defined in the application manifest.
+						widgetSettings = new XboxGameBarWidget(
+							widgetArgs,
+							Window.Current.CoreWindow,
+							rootFrame);
+						rootFrame.Navigate(typeof(WidgetSettingsPage));
 
-                    Window.Current.Activate();
+						Window.Current.Closed += WidgetSettingsWindow_Closed;
+					}
+					else
+					{
+						// Unknown - Game Bar should never send you an unknown App Extension Id
+						return;
+					}
+					Window.Current.Activate();
                 }
                 else
                 {
@@ -91,6 +111,11 @@ namespace Pixel_Crosshair
             widget = null;
             Window.Current.Closed -= WidgetWindow_Closed;
         }
+		private void WidgetSettingsWindow_Closed(object sender, Windows.UI.Core.CoreWindowEventArgs e)
+		{
+			widgetSettings = null;
+			Window.Current.Closed -= WidgetSettingsWindow_Closed;
+		}
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -160,6 +185,7 @@ namespace Pixel_Crosshair
             var deferral = e.SuspendingOperation.GetDeferral();
 
             widget = null;
+			widgetSettings = null;
 
             deferral.Complete();
         }
