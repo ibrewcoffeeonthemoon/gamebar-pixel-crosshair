@@ -7,36 +7,38 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 	<Grid Background="Transparent">
-		<Grid 
-			x:Name="CrosshairPreviewGrid"
-			HorizontalAlignment="Center" 
-			VerticalAlignment="Center" 
-			Width="2" 
-			Height="2"
-			IsHitTestVisible="False">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="1*"/>
-				<RowDefinition Height="1*"/>
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="1*"/>
-				<ColumnDefinition Width="1*"/>
-			</Grid.ColumnDefinitions>
-
-			<Rectangle Grid.Row="0" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
-			<Rectangle Grid.Row="0" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
-			<Rectangle Grid.Row="1" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
-			<Rectangle Grid.Row="1" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
-		</Grid>
 		<Button 
 			x:Name="CenterAppButton" 
 			Click="OnCenterAppButtonClick" 
 			HorizontalAlignment="Stretch" 
-			VerticalAlignment="Bottom"
+			VerticalAlignment="Stretch"
+			ToolTipService.ToolTip="Click to center the crosshair on screen"
+			ToolTipService.Placement="Mouse"
+			Background="Transparent"
 			CornerRadius="10"
 			Padding="10"
 			Margin="10">
-			Center App
+			<Grid 
+				x:Name="CrosshairPreviewGrid"
+				HorizontalAlignment="Center" 
+				VerticalAlignment="Center" 
+				Width="2" 
+				Height="2"
+				IsHitTestVisible="False">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="1*"/>
+					<RowDefinition Height="1*"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*"/>
+					<ColumnDefinition Width="1*"/>
+				</Grid.ColumnDefinitions>
+
+				<Rectangle Grid.Row="0" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
+				<Rectangle Grid.Row="0" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
+				<Rectangle Grid.Row="1" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
+				<Rectangle Grid.Row="1" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
+			</Grid>
 		</Button>
 	</Grid>
 </Page>
