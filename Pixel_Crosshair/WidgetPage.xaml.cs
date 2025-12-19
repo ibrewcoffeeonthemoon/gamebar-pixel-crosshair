@@ -19,19 +19,23 @@ namespace Pixel_Crosshair
     /// </summary>
     public sealed partial class WidgetPage : Page
     {
-        private XboxGameBarWidget widget = null;
+		// reference to the Xbox Game Bar widget instance
+		private XboxGameBarWidget widget = null;
 
         public WidgetPage()
         {
-            this.InitializeComponent();
+			// Initialize the XAML components
+			this.InitializeComponent();
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            widget = e.Parameter as XboxGameBarWidget;
+			// get the widget instance
+			widget = e.Parameter as XboxGameBarWidget;
+			// listen to display mode changes to update UI accordingly
+			widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
+			// initial update of UI based on current display mode
+			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
 
-            widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
-
-            widget.SettingsClicked += OnWidgetSettingsButtonClicked;
 			// listen to application data changes
 			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
 			// simulate a data change to load initial settings
@@ -48,8 +52,10 @@ namespace Pixel_Crosshair
 
         private void OnGameBarDisplayModeChanged(XboxGameBarWidget sender, object args)
         {
-            var isPinned = sender.GameBarDisplayMode == XboxGameBarDisplayMode.PinnedOnly;
-            _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			// determined if the widget is pinned or not
+			var isPinned = sender.GameBarDisplayMode == XboxGameBarDisplayMode.PinnedOnly;
+			// if pinned, hide the center button, otherwise show it
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 CenterAppButton.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
             });
@@ -57,14 +63,16 @@ namespace Pixel_Crosshair
 
         private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e)
         {
-            await widget.CenterWindowAsync();
+			// center the widget window on screen
+			await widget.CenterWindowAsync();
         }
 
 		private async void OnWidgetSettingsButtonClicked(XboxGameBarWidget sender, object args)
 		{
-            // if necessary pre-configure any required data needed by the settings widget prior to activation
-            // ...
-            await sender.ActivateSettingsAsync();
+			// launch the settings page
+			// if necessary pre-configure any required data needed by the settings widget prior to activation
+			// ...
+			await sender.ActivateSettingsAsync();
 		}
 
         private void OnApplicationDataChanged(ApplicationData sender, object args)

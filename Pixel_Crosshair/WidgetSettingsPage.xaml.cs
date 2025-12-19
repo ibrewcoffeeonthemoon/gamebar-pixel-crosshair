@@ -13,22 +13,29 @@ namespace Pixel_Crosshair
     {
         public WidgetSettingsPage()
         {
-            this.InitializeComponent();
-            LoadSettings();
+			// Initialize the XAML components
+			this.InitializeComponent();
+			// Load settings from storage when the page is initialized
+			LoadSettings();
         }
 
 		void LoadSettings()
 		{
+			// get saved color from storage
 			var settings = ApplicationData.Current.LocalSettings;
 			string colorStr = settings.Values["CrosshairColor"].ToString();
-			ColorPicker.Color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
+			var color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
+			// set the ColorPicker's color retrieved from storage
+			ColorPicker.Color = color;
 		}
 
         private async void OnColorPickerColorChanged(object sender, ColorChangedEventArgs e)
         {
+			// save user selected color to storage
 			var settings = ApplicationData.Current.LocalSettings;
             settings.Values["CrosshairColor"] = ColorPicker.Color.ToString();
-            ApplicationData.Current.SignalDataChanged();
+			// signal that application data has changed
+			ApplicationData.Current.SignalDataChanged();
 		}
 	}
 }
