@@ -15,9 +15,8 @@
 			ToolTipService.ToolTip="Click to center the crosshair on screen"
 			ToolTipService.Placement="Mouse"
 			Background="Transparent"
-			CornerRadius="10"
-			Padding="10"
-			Margin="10">
+			BorderThickness="0"
+			>
 			<Grid 
 				x:Name="CrosshairPreviewGrid"
 				HorizontalAlignment="Center" 
