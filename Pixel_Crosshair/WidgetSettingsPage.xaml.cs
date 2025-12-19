@@ -28,6 +28,7 @@ namespace Pixel_Crosshair
         {
 			var settings = ApplicationData.Current.LocalSettings;
             settings.Values["CrosshairColor"] = ColorPicker.Color.ToString();
+            ApplicationData.Current.SignalDataChanged();
 		}
 	}
 }

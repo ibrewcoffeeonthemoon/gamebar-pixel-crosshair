@@ -5,6 +5,7 @@ using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
@@ -28,20 +29,21 @@ namespace Pixel_Crosshair
         {
             widget = e.Parameter as XboxGameBarWidget;
 
-            LoadSettings();
-
             widget.GameBarDisplayModeChanged += OnGameBarDisplayModeChanged;
 
 			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
-        }
 
-		void LoadSettings()
-		{
-			var settings = ApplicationData.Current.LocalSettings;
-			string colorStr = settings.Values["CrosshairColor"].ToString();
-			var color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
-            ChangeCrosshairColor(color);
+            widget.CloseRequested += OnWidgetCloseRequested;
+
+            ApplicationData.Current.DataChanged += OnApplicationDataChanged;
+
+			ApplicationData.Current.SignalDataChanged();
 		}
+
+        private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args)
+        {
+			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
+        }
 
         private void OnGameBarDisplayModeChanged(XboxGameBarWidget sender, object args)
         {
@@ -64,27 +66,20 @@ namespace Pixel_Crosshair
             await sender.ActivateSettingsAsync();
 		}
 
-        private async void OnColorPickerColorChanged(object sender, ColorChangedEventArgs e)
+        private void OnApplicationDataChanged(ApplicationData sender, object args)
         {
-			// Use a SolidColorBrush with the new color
-			SolidColorBrush newBrush = new SolidColorBrush(e.NewColor);
-			// Update all Rectangles inside the CrosshairContainer
-			foreach (var child in CrosshairPreviewGrid.Children)
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				if (child is Rectangle rect)
-					rect.Fill = newBrush;
-			}
-
-		}
-
-        private void ChangeCrosshairColor(Color color)
-        {
-			// Update all Rectangles inside the CrosshairContainer
-			foreach (var child in CrosshairPreviewGrid.Children)
-			{
-                if (child is Rectangle rect)
-                    rect.Fill = new SolidColorBrush(color);
-			}
+				var settings = ApplicationData.Current.LocalSettings;
+				string colorStr = settings.Values["CrosshairColor"].ToString();
+				var color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
+				// Update all Rectangles inside the CrosshairContainer
+				foreach (var child in CrosshairPreviewGrid.Children)
+				{
+					if (child is Rectangle rect)
+						rect.Fill = new SolidColorBrush(color);
+				}
+			});
         }
     }
 }
