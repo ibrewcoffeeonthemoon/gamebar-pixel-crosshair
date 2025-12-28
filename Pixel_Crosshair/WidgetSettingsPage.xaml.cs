@@ -20,7 +20,6 @@ namespace Pixel_Crosshair
 			InitializePixelLayoutEditerGrid();
 			// Load settings from storage when the page is initialized
 			LoadSettings();
-			LoadMatrixSettings();
         }
 
 		private void InitializePixelLayoutEditerGrid()
@@ -46,17 +45,18 @@ namespace Pixel_Crosshair
 
 		void LoadSettings()
 		{
-			// get saved color from storage
+			// get settings from storage
 			var settings = ApplicationData.Current.LocalSettings;
-			string colorStr = settings.Values["CrosshairColor"].ToString();
-			var color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
-			// set the ColorPicker's color retrieved from storage
-			PixelColorPicker.Color = color;
-		}
 
-		private void LoadMatrixSettings()
-		{
-			var settings = ApplicationData.Current.LocalSettings;
+			// restore ColorPicker State
+			if (settings.Values.ContainsKey("CrosshairColor"))
+			{
+				string colorStr = settings.Values["CrosshairColor"].ToString();
+				var color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
+				PixelColorPicker.Color = color;
+			}
+
+			// restore Matrix/Layout State
 			if (settings.Values.ContainsKey("CrosshairLayout"))
 			{
 				string savedState = settings.Values["CrosshairLayout"].ToString();
@@ -65,13 +65,13 @@ namespace Pixel_Crosshair
 				{
 					if (PixelLayoutEditorGrid.Children[i] is CheckBox cb && i < savedState.Length)
 					{
-						// Temporarily remove the event handler so we don't 
-						// trigger a 'Save' while we are 'Loading'
+						// Unsubscribe to prevent triggering Save during Load
 						cb.Checked -= OnPixelLayoutEditorCheckboxToggled;
 						cb.Unchecked -= OnPixelLayoutEditorCheckboxToggled;
 
 						cb.IsChecked = savedState[i] == '1';
 
+						// Resubscribe
 						cb.Checked += OnPixelLayoutEditorCheckboxToggled;
 						cb.Unchecked += OnPixelLayoutEditorCheckboxToggled;
 					}
