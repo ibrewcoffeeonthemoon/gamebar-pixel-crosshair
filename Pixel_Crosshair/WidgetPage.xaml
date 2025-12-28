@@ -22,21 +22,9 @@
 				HorizontalAlignment="Center" 
 				VerticalAlignment="Center" 
 				Background="Transparent"
-				Width="2" 
-				Height="2"
+				Width="10" 
+				Height="10"
 				IsHitTestVisible="False">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="1*"/>
-					<RowDefinition Height="1*"/>
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="1*"/>
-					<ColumnDefinition Width="1*"/>
-				</Grid.ColumnDefinitions>
-				<Rectangle Grid.Row="0" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
-				<Rectangle Grid.Row="0" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
-				<Rectangle Grid.Row="1" Grid.Column="0" Fill="Cyan" Width="1" Height="1"/>
-				<Rectangle Grid.Row="1" Grid.Column="1" Fill="Cyan" Width="1" Height="1"/>
 			</Grid>
 		</Button>
 	</Grid>

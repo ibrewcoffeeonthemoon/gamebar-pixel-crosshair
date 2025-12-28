@@ -26,8 +26,38 @@ namespace Pixel_Crosshair
         {
 			// Initialize the XAML components
 			this.InitializeComponent();
+			InitializeCrosshairGrid();
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+
+		private void InitializeCrosshairGrid()
+		{
+			// Clear any existing definitions
+			CrosshairPreviewGrid.Children.Clear();
+			CrosshairPreviewGrid.RowDefinitions.Clear();
+			CrosshairPreviewGrid.ColumnDefinitions.Clear();
+			// Create the 10x10 coordinate system
+			for (int i = 0; i < 10; i++)
+			{
+				CrosshairPreviewGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Pixel) });
+				CrosshairPreviewGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Pixel) });
+			}
+
+			// Populate with 100 hidden pixel rectangles
+			for (int i = 0; i < 100; i++)
+			{
+				var rect = new Rectangle
+				{
+					Width = 1,
+					Height = 1,
+					Visibility = Visibility.Collapsed
+				};
+				Grid.SetRow(rect, i / 10);
+				Grid.SetColumn(rect, i % 10);
+				CrosshairPreviewGrid.Children.Add(rect);
+			}
+		}
+
+		protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 			// get the widget instance
 			widget = e.Parameter as XboxGameBarWidget;
@@ -67,15 +97,25 @@ namespace Pixel_Crosshair
 			// let the UI thread handle the update and also fetch the settings from application data
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
-				// fetch data from application data and convert to Color object
+				// fetch data from application data and convert to SolidColorBrush object
 				var settings = ApplicationData.Current.LocalSettings;
 				string colorStr = settings.Values["CrosshairColor"].ToString();
 				var color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
-				// update UI, set all rectangles in the preview grid to the new color
-				foreach (var child in CrosshairPreviewGrid.Children)
+				var brush = new SolidColorBrush(color);
+				// fetch matrix state from application data (or default to all '0's)
+				string matrixStr = settings.Values.ContainsKey("CrosshairMatrix")
+					? settings.Values["CrosshairMatrix"].ToString()
+					: new string('0', 100);
+				// update UI, set all rectangles in the preview grid to the new brush and visibility based on matrix state
+				for (int i = 0; i < 100; i++)
 				{
-					if (child is Rectangle rect)
-						rect.Fill = new SolidColorBrush(color);
+					if (CrosshairPreviewGrid.Children[i] is Rectangle rect)
+					{
+						// Update Color
+						rect.Fill = brush;
+						// Update Visibility (Shape)
+						rect.Visibility = (matrixStr[i] == '1') ? Visibility.Visible : Visibility.Collapsed;
+					}
 				}
 			});
         }
