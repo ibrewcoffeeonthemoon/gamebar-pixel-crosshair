@@ -7,24 +7,44 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" />
-
-        <StackPanel
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Orientation="Horizontal"
-            Spacing="20"
-            >
+	<StackPanel 
+        Orientation="Horizontal" 
+        HorizontalAlignment="Center" 
+        VerticalAlignment="Center" 
+        Spacing="50">
+		<StackPanel
+			Grid.Column="0"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Top"
+			Orientation="Horizontal"
+			Spacing="20"
+			>
 			<ColorPicker 
-				x:Name="ColorPicker"
+				x:Name="PixelColorPicker"
 				IsColorSliderVisible="True"
 				IsHexInputVisible="True"
 				IsColorChannelTextInputVisible="True"
 				IsColorSpectrumVisible="True"
 				ColorSpectrumShape="Box"
-                ColorChanged="OnColorPickerColorChanged"
+				ColorChanged="OnColorPickerColorChanged"
 				/>
-        </StackPanel>
-    </Grid>
+		</StackPanel>
+		<StackPanel
+			Grid.Column="1"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Top"
+			Orientation="Vertical"
+			Spacing="20"
+			>
+			<VariableSizedWrapGrid 
+                x:Name="PixelLayoutEditorGrid"
+                MaximumRowsOrColumns="10" 
+                Orientation="Horizontal"
+                ItemWidth="25" 
+                ItemHeight="25" />
+			<StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+				<Button Content="Clear" Width="80" Click="OnPixelLayoutEditorClearButtonClicked"/>
+			</StackPanel>
+		</StackPanel>
+    </StackPanel>
 </Page>

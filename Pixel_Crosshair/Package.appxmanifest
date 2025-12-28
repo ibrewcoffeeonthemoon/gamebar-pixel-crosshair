@@ -82,9 +82,9 @@
                 <Window>
                   <Size>
                     <Height>600</Height>
-                    <Width>500</Width>
+                    <Width>750</Width>
                     <MinHeight>600</MinHeight>
-                    <MinWidth>500</MinWidth>
+                    <MinWidth>750</MinWidth>
                   </Size>
                   <ResizeSupported>
                     <Horizontal>false</Horizontal>
