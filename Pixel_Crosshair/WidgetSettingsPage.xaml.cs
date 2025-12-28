@@ -1,4 +1,5 @@
-﻿using Windows.Storage;
+﻿using System.Linq;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -19,6 +20,7 @@ namespace Pixel_Crosshair
 			GenerateMatrix();
 			// Load settings from storage when the page is initialized
 			LoadSettings();
+			LoadMatrixSettings();
         }
 
 		private void GenerateMatrix()
@@ -36,8 +38,8 @@ namespace Pixel_Crosshair
 					Tag = i // Store the index (0-99) to identify the pixel later
 				};
 
-				//cb.Checked += OnPixelToggled;
-				//cb.Unchecked += OnPixelToggled;
+				cb.Checked += OnPixelToggled;
+				cb.Unchecked += OnPixelToggled;
 
 				MatrixGrid.Children.Add(cb);
 			}
@@ -53,12 +55,53 @@ namespace Pixel_Crosshair
 			ColorPicker.Color = color;
 		}
 
-        private async void OnColorPickerColorChanged(object sender, ColorChangedEventArgs e)
+		private void LoadMatrixSettings()
+		{
+			var settings = ApplicationData.Current.LocalSettings;
+			if (settings.Values.ContainsKey("CrosshairMatrix"))
+			{
+				string savedState = settings.Values["CrosshairMatrix"].ToString();
+
+				for (int i = 0; i < MatrixGrid.Children.Count; i++)
+				{
+					if (MatrixGrid.Children[i] is CheckBox cb && i < savedState.Length)
+					{
+						// Temporarily remove the event handler so we don't 
+						// trigger a 'Save' while we are 'Loading'
+						cb.Checked -= OnPixelToggled;
+						cb.Unchecked -= OnPixelToggled;
+
+						cb.IsChecked = savedState[i] == '1';
+
+						cb.Checked += OnPixelToggled;
+						cb.Unchecked += OnPixelToggled;
+					}
+				}
+			}
+		}
+
+		private async void OnColorPickerColorChanged(object sender, ColorChangedEventArgs e)
         {
 			// save user selected color to storage
 			var settings = ApplicationData.Current.LocalSettings;
             settings.Values["CrosshairColor"] = ColorPicker.Color.ToString();
 			// signal that application data has changed
+			ApplicationData.Current.SignalDataChanged();
+		}
+
+		private void OnPixelToggled(object sender, RoutedEventArgs e)
+		{
+			// Get all checkboxes, order them by their index (Tag), 
+			// and turn 'Checked' into '1' and 'Unchecked' into '0'
+			var stateString = string.Join("", MatrixGrid.Children
+				.OfType<CheckBox>()
+				.OrderBy(cb => (int)cb.Tag)
+				.Select(cb => cb.IsChecked == true ? "1" : "0"));
+
+			var settings = ApplicationData.Current.LocalSettings;
+			settings.Values["CrosshairMatrix"] = stateString;
+
+			// Signal the other window to update!
 			ApplicationData.Current.SignalDataChanged();
 		}
 	}
