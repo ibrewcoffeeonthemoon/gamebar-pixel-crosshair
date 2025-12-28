@@ -32,14 +32,14 @@ namespace Pixel_Crosshair
 		private void InitializeCrosshairGrid()
 		{
 			// Clear any existing definitions
-			CrosshairPreviewGrid.Children.Clear();
-			CrosshairPreviewGrid.RowDefinitions.Clear();
-			CrosshairPreviewGrid.ColumnDefinitions.Clear();
+			CrosshairGrid.Children.Clear();
+			CrosshairGrid.RowDefinitions.Clear();
+			CrosshairGrid.ColumnDefinitions.Clear();
 			// Create the 10x10 coordinate system
 			for (int i = 0; i < 10; i++)
 			{
-				CrosshairPreviewGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Pixel) });
-				CrosshairPreviewGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Pixel) });
+				CrosshairGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Pixel) });
+				CrosshairGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Pixel) });
 			}
 
 			// Populate with 100 hidden pixel rectangles
@@ -53,7 +53,7 @@ namespace Pixel_Crosshair
 				};
 				Grid.SetRow(rect, i / 10);
 				Grid.SetColumn(rect, i % 10);
-				CrosshairPreviewGrid.Children.Add(rect);
+				CrosshairGrid.Children.Add(rect);
 			}
 		}
 
@@ -103,13 +103,13 @@ namespace Pixel_Crosshair
 				var color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
 				var brush = new SolidColorBrush(color);
 				// fetch matrix state from application data (or default to all '0's)
-				string matrixStr = settings.Values.ContainsKey("CrosshairMatrix")
-					? settings.Values["CrosshairMatrix"].ToString()
+				string matrixStr = settings.Values.ContainsKey("CrosshairLayout")
+					? settings.Values["CrosshairLayout"].ToString()
 					: new string('0', 100);
 				// update UI, set all rectangles in the preview grid to the new brush and visibility based on matrix state
 				for (int i = 0; i < 100; i++)
 				{
-					if (CrosshairPreviewGrid.Children[i] is Rectangle rect)
+					if (CrosshairGrid.Children[i] is Rectangle rect)
 					{
 						// Update Color
 						rect.Fill = brush;

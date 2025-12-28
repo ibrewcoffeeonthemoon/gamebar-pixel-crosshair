@@ -17,15 +17,15 @@ namespace Pixel_Crosshair
         {
 			// Initialize the XAML components
 			this.InitializeComponent();
-			GenerateMatrix();
+			InitializePixelLayoutEditerGrid();
 			// Load settings from storage when the page is initialized
 			LoadSettings();
 			LoadMatrixSettings();
         }
 
-		private void GenerateMatrix()
+		private void InitializePixelLayoutEditerGrid()
 		{
-			MatrixGrid.Children.Clear();
+			PixelLayoutEditorGrid.Children.Clear();
 
 			for (int i = 0; i < 100; i++)
 			{
@@ -38,10 +38,9 @@ namespace Pixel_Crosshair
 					Tag = i // Store the index (0-99) to identify the pixel later
 				};
 
-				cb.Checked += OnPixelToggled;
-				cb.Unchecked += OnPixelToggled;
-
-				MatrixGrid.Children.Add(cb);
+				cb.Checked += OnPixelLayoutEditorCheckboxToggled;
+				cb.Unchecked += OnPixelLayoutEditorCheckboxToggled;
+				PixelLayoutEditorGrid.Children.Add(cb);
 			}
 		}
 
@@ -52,29 +51,29 @@ namespace Pixel_Crosshair
 			string colorStr = settings.Values["CrosshairColor"].ToString();
 			var color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
 			// set the ColorPicker's color retrieved from storage
-			ColorPicker.Color = color;
+			PixelColorPicker.Color = color;
 		}
 
 		private void LoadMatrixSettings()
 		{
 			var settings = ApplicationData.Current.LocalSettings;
-			if (settings.Values.ContainsKey("CrosshairMatrix"))
+			if (settings.Values.ContainsKey("CrosshairLayout"))
 			{
-				string savedState = settings.Values["CrosshairMatrix"].ToString();
+				string savedState = settings.Values["CrosshairLayout"].ToString();
 
-				for (int i = 0; i < MatrixGrid.Children.Count; i++)
+				for (int i = 0; i < PixelLayoutEditorGrid.Children.Count; i++)
 				{
-					if (MatrixGrid.Children[i] is CheckBox cb && i < savedState.Length)
+					if (PixelLayoutEditorGrid.Children[i] is CheckBox cb && i < savedState.Length)
 					{
 						// Temporarily remove the event handler so we don't 
 						// trigger a 'Save' while we are 'Loading'
-						cb.Checked -= OnPixelToggled;
-						cb.Unchecked -= OnPixelToggled;
+						cb.Checked -= OnPixelLayoutEditorCheckboxToggled;
+						cb.Unchecked -= OnPixelLayoutEditorCheckboxToggled;
 
 						cb.IsChecked = savedState[i] == '1';
 
-						cb.Checked += OnPixelToggled;
-						cb.Unchecked += OnPixelToggled;
+						cb.Checked += OnPixelLayoutEditorCheckboxToggled;
+						cb.Unchecked += OnPixelLayoutEditorCheckboxToggled;
 					}
 				}
 			}
@@ -84,22 +83,22 @@ namespace Pixel_Crosshair
         {
 			// save user selected color to storage
 			var settings = ApplicationData.Current.LocalSettings;
-            settings.Values["CrosshairColor"] = ColorPicker.Color.ToString();
+            settings.Values["CrosshairColor"] = PixelColorPicker.Color.ToString();
 			// signal that application data has changed
 			ApplicationData.Current.SignalDataChanged();
 		}
 
-		private void OnPixelToggled(object sender, RoutedEventArgs e)
+		private void OnPixelLayoutEditorCheckboxToggled(object sender, RoutedEventArgs e)
 		{
 			// Get all checkboxes, order them by their index (Tag), 
 			// and turn 'Checked' into '1' and 'Unchecked' into '0'
-			var stateString = string.Join("", MatrixGrid.Children
+			var stateString = string.Join("", PixelLayoutEditorGrid.Children
 				.OfType<CheckBox>()
 				.OrderBy(cb => (int)cb.Tag)
 				.Select(cb => cb.IsChecked == true ? "1" : "0"));
 
 			var settings = ApplicationData.Current.LocalSettings;
-			settings.Values["CrosshairMatrix"] = stateString;
+			settings.Values["CrosshairLayout"] = stateString;
 
 			// Signal the other window to update!
 			ApplicationData.Current.SignalDataChanged();

@@ -18,7 +18,7 @@
 			BorderThickness="0"
 			>
 			<Grid 
-				x:Name="CrosshairPreviewGrid"
+				x:Name="CrosshairGrid"
 				HorizontalAlignment="Center" 
 				VerticalAlignment="Center" 
 				Background="Transparent"

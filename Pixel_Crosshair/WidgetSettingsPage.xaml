@@ -20,7 +20,7 @@
 			Spacing="20"
 			>
 			<ColorPicker 
-				x:Name="ColorPicker"
+				x:Name="PixelColorPicker"
 				IsColorSliderVisible="True"
 				IsHexInputVisible="True"
 				IsColorChannelTextInputVisible="True"
@@ -37,7 +37,7 @@
 			Spacing="20"
 			>
 			<VariableSizedWrapGrid 
-                x:Name="MatrixGrid"
+                x:Name="PixelLayoutEditorGrid"
                 MaximumRowsOrColumns="10" 
                 Orientation="Horizontal"
                 ItemWidth="25" 
