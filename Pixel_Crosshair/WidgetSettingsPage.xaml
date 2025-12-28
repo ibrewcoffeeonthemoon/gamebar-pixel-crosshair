@@ -33,10 +33,15 @@
 			Grid.Column="1"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
-			Orientation="Horizontal"
+			Orientation="Vertical"
 			Spacing="20"
 			>
-			<TextBlock Text="10x10 Matrix Editor" FontWeight="Bold" FontSize="16"/>
+			<VariableSizedWrapGrid 
+                x:Name="MatrixGrid"
+                MaximumRowsOrColumns="10" 
+                Orientation="Horizontal"
+                ItemWidth="25" 
+                ItemHeight="25" />
 		</StackPanel>
     </StackPanel>
 </Page>

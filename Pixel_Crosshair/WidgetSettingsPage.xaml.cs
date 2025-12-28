@@ -1,5 +1,6 @@
 ﻿using Windows.Storage;
 using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -15,9 +16,32 @@ namespace Pixel_Crosshair
         {
 			// Initialize the XAML components
 			this.InitializeComponent();
+			GenerateMatrix();
 			// Load settings from storage when the page is initialized
 			LoadSettings();
         }
+
+		private void GenerateMatrix()
+		{
+			MatrixGrid.Children.Clear();
+
+			for (int i = 0; i < 100; i++)
+			{
+				CheckBox cb = new CheckBox
+				{
+					MinWidth = 0,
+					MinHeight = 0,
+					Padding = new Thickness(0),
+					Margin = new Thickness(0),
+					Tag = i // Store the index (0-99) to identify the pixel later
+				};
+
+				//cb.Checked += OnPixelToggled;
+				//cb.Unchecked += OnPixelToggled;
+
+				MatrixGrid.Children.Add(cb);
+			}
+		}
 
 		void LoadSettings()
 		{
