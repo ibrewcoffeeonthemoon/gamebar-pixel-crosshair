@@ -42,6 +42,9 @@
                 Orientation="Horizontal"
                 ItemWidth="25" 
                 ItemHeight="25" />
+			<StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+				<Button Content="Clear" Width="80" Click="OnPixelLayoutEditorClearButtonClicked"/>
+			</StackPanel>
 		</StackPanel>
     </StackPanel>
 </Page>

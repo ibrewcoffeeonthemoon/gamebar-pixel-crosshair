@@ -8,20 +8,20 @@ using Windows.UI.Xaml.Controls;
 
 namespace Pixel_Crosshair
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class WidgetSettingsPage : Page
-    {
-        public WidgetSettingsPage()
-        {
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class WidgetSettingsPage : Page
+	{
+		public WidgetSettingsPage()
+		{
 			// Initialize the XAML components
 			this.InitializeComponent();
 			InitializePixelLayoutEditerGrid();
 
 			// Load settings from storage when the page is initialized
 			LoadSettings();
-        }
+		}
 
 		private void InitializePixelLayoutEditerGrid()
 		{
@@ -86,10 +86,10 @@ namespace Pixel_Crosshair
 		}
 
 		private async void OnColorPickerColorChanged(object sender, ColorChangedEventArgs e)
-        {
+		{
 			// Save user selected color to storage
 			var settings = ApplicationData.Current.LocalSettings;
-            settings.Values["CrosshairColor"] = PixelColorPicker.Color.ToString();
+			settings.Values["CrosshairColor"] = PixelColorPicker.Color.ToString();
 
 			// Signal that application data has changed
 			ApplicationData.Current.SignalDataChanged();
@@ -108,6 +108,31 @@ namespace Pixel_Crosshair
 			settings.Values["CrosshairLayout"] = stateString;
 
 			// Signal the other window to update!
+			ApplicationData.Current.SignalDataChanged();
+		}
+
+		private void OnPixelLayoutEditorClearButtonClicked(object sender, RoutedEventArgs e)
+		{
+			// Clear all CheckBoxes in the grid
+			foreach (var child in PixelLayoutEditorGrid.Children)
+			{
+				if (child is CheckBox cb)
+				{
+					// Detach the handler to avoid triggering save
+					cb.Checked -= OnPixelLayoutEditorCheckboxToggled;
+					cb.Unchecked -= OnPixelLayoutEditorCheckboxToggled;
+					// Uncheck the box
+					cb.IsChecked = false;
+					// Reattach the handler
+					cb.Checked += OnPixelLayoutEditorCheckboxToggled;
+					cb.Unchecked += OnPixelLayoutEditorCheckboxToggled;
+				}
+			}
+
+			// Save the cleared layout to storage
+			var settings = ApplicationData.Current.LocalSettings;
+			settings.Values["CrosshairLayout"] = new string('0', 100);
+			// Signal the Main Widget to refresh
 			ApplicationData.Current.SignalDataChanged();
 		}
 	}
