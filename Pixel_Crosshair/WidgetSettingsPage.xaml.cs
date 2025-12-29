@@ -17,6 +17,7 @@ namespace Pixel_Crosshair
 		{
 			// Initialize the XAML components
 			this.InitializeComponent();
+			this.DataContext = Store.Instance;
 			InitializePixelLayoutEditerGrid();
 
 			// Load settings from storage when the page is initialized
