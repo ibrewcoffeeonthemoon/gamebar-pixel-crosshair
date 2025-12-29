@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using Windows.Storage;
-using Windows.UI;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -24,9 +22,6 @@ namespace Pixel_Crosshair
 			// Initialize the XAML components
 			this.InitializeComponent();
 			InitializePixelLayoutEditerGrid();
-
-			// Load settings from storage when the page is initialized
-			LoadSettings();
 
 			// Clean up when setting window closed 
             Window.Current.Closed += Current_Closed;
@@ -55,81 +50,41 @@ namespace Pixel_Crosshair
 					Margin = new Thickness(0),
 					Tag = i // Store the index (0-99) to identify the pixel later
 				};
-				// Subscribe to Checked and Unchecked events
-				cb.Checked += OnPixelLayoutEditorCheckboxToggled;
-				cb.Unchecked += OnPixelLayoutEditorCheckboxToggled;
+				// Binding to CrosshairLayout, OneWay
+				cb.SetBinding(CheckBox.IsCheckedProperty, new Binding
+				{
+					Source = _store,
+					Path = new PropertyPath("CrosshairLayout"),
+					Converter = new LayoutToBoolConverter(),
+					ConverterParameter = i.ToString(),
+					Mode = BindingMode.OneWay,
+				});
+				// 
+				cb.Click += OnPixelCheckboxClick;
 				// Position the CheckBox in the grid
 				PixelLayoutEditorGrid.Children.Add(cb);
 			}
 		}
 
-		void LoadSettings()
+		private void OnPixelCheckboxClick(object sender, RoutedEventArgs e)
 		{
-			// Get settings from storage
-			var settings = ApplicationData.Current.LocalSettings;
+			var cb = sender as CheckBox;
+			int index = (int)cb.Tag; // Which pixel was clicked?
 
-			// Restore Matrix/Layout State
-			if (settings.Values.ContainsKey("CrosshairLayout"))
-			{
-				// Get saved state string
-				string savedState = settings.Values["CrosshairLayout"].ToString();
-				// Iterate through each CheckBox and restore its state
-				for (int i = 0; i < PixelLayoutEditorGrid.Children.Count; i++)
-				{
-					if (PixelLayoutEditorGrid.Children[i] is CheckBox cb && i < savedState.Length)
-					{
-						// Unsubscribe to prevent triggering Save during Load
-						cb.Checked -= OnPixelLayoutEditorCheckboxToggled;
-						cb.Unchecked -= OnPixelLayoutEditorCheckboxToggled;
-						// Restore state
-						cb.IsChecked = savedState[i] == '1';
-						// Resubscribe
-						cb.Checked += OnPixelLayoutEditorCheckboxToggled;
-						cb.Unchecked += OnPixelLayoutEditorCheckboxToggled;
-					}
-				}
-			}
-		}
+			// Get the current state from the store instance
+			char[] layout = _store.CrosshairLayout.ToCharArray();
 
-		private void OnPixelLayoutEditorCheckboxToggled(object sender, RoutedEventArgs e)
-		{
-			// Save the current layout state to storage, as a string of '1's and '0's
-			var stateString = string.Join("", PixelLayoutEditorGrid.Children
-				.OfType<CheckBox>()
-				.OrderBy(cb => (int)cb.Tag)
-				.Select(cb => cb.IsChecked == true ? "1" : "0"));
+			// Update the specific bit (The "Reducer" step)
+			layout[index] = (cb.IsChecked == true) ? '1' : '0';
 
-			// Store in application data
-			var settings = ApplicationData.Current.LocalSettings;
-			settings.Values["CrosshairLayout"] = stateString;
-
-			// Signal the other window to update!
-			ApplicationData.Current.SignalDataChanged();
+			// Push the new state back to the store
+			_store.CrosshairLayout = new string(layout);
 		}
 
 		private void OnPixelLayoutEditorClearButtonClicked(object sender, RoutedEventArgs e)
 		{
-			// Clear all CheckBoxes in the grid
-			foreach (var child in PixelLayoutEditorGrid.Children)
-			{
-				if (child is CheckBox cb)
-				{
-					// Detach the handler to avoid triggering save
-					cb.Checked -= OnPixelLayoutEditorCheckboxToggled;
-					cb.Unchecked -= OnPixelLayoutEditorCheckboxToggled;
-					// Uncheck the box
-					cb.IsChecked = false;
-					// Reattach the handler
-					cb.Checked += OnPixelLayoutEditorCheckboxToggled;
-					cb.Unchecked += OnPixelLayoutEditorCheckboxToggled;
-				}
-			}
-
-			// Save the cleared layout to storage
-			var settings = ApplicationData.Current.LocalSettings;
-			settings.Values["CrosshairLayout"] = new string('0', 100);
-			// Signal the Main Widget to refresh
-			ApplicationData.Current.SignalDataChanged();
+			//
+			_store.CrosshairLayout = new string('0', 100);
 		}
 	}
 }

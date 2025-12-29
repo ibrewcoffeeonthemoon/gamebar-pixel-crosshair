@@ -72,6 +72,7 @@ namespace Pixel_Crosshair
 				{
 					// Store the value as a string into storage
 					_settings.Values["CrosshairLayout"] = value;
+					Debug.WriteLine($"[Store] CrosshairLayout set to {value}");
 
 					// Trigger SignalDataChanged event
 					ApplicationData.Current.SignalDataChanged();
@@ -83,6 +84,7 @@ namespace Pixel_Crosshair
 		{
 			// Read and update everything possible variable
 			OnPropertyChanged(nameof(CrosshairColor));
+			OnPropertyChanged(nameof(CrosshairLayout));
 		}
 
 		protected void OnPropertyChanged(string name)
@@ -129,6 +131,29 @@ namespace Pixel_Crosshair
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
+		}
+	}
+
+	public class LayoutToBoolConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, string language)
+		{
+			if (value is string layout && parameter is string indexStr)
+			{
+				Debug.WriteLine(layout);
+				if (int.TryParse(indexStr, out int index) && index < layout.Length)
+				{
+					return layout[index] == '1';
+				}
+			}
+			return false;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		{
+			// We don't strictly need ConvertBack because we will handle 
+			// the Click event manually to update the string.
+			return DependencyProperty.UnsetValue;
 		}
 	}
 }

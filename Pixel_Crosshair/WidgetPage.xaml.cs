@@ -107,5 +107,5 @@ namespace Pixel_Crosshair
 			// Launch the settings page
 			await sender.ActivateSettingsAsync();
 		}
-    }
+	}
 }
