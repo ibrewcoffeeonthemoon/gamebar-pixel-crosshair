@@ -23,6 +23,7 @@ namespace Pixel_Crosshair
 
 		public Store(Page page)
 		{
+			// ref to page
 			_page = page;
 
 			// Listen for "Broadcasts" from other windows
@@ -32,17 +33,16 @@ namespace Pixel_Crosshair
 			_cachedCrosshairLayout = CrosshairLayout;
 		}
 
-        public void Unregister()
-		{
-			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
-		}
+        public void Unregister() => ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
 
+		// property
 		public Color CrosshairColor
 		{
 			get => _settings.Get("CrosshairColor", Colors.Cyan);
 			set => _settings.Set("CrosshairColor", value);
 		}
 
+		// property
 		public string CrosshairLayout
 		{
 			get => _settings.Get("CrosshairLayout", new string('0', 100));
@@ -55,13 +55,12 @@ namespace Pixel_Crosshair
 			OnPropertyChanged(nameof(CrosshairColor));
 
 			// Check if currentLayout is different from cached layout
-			string currentLayout = CrosshairLayout;
-			if (currentLayout != _cachedCrosshairLayout)
+			if (CrosshairLayout != _cachedCrosshairLayout)
 			{
 				// Only fire event if layout has been updated
 				OnPropertyChanged(nameof(CrosshairLayout));
 				// Update the cached value
-				_cachedCrosshairLayout = currentLayout;
+				_cachedCrosshairLayout = CrosshairLayout;
 			}
 		}
 
@@ -69,9 +68,8 @@ namespace Pixel_Crosshair
 		{
 			// Invoke PropertyChangedEvent on specific variable name
 			_ = _page.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-			});
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name))
+			);
 		}
 	}
 
@@ -109,16 +107,12 @@ namespace Pixel_Crosshair
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			if (value is Color color)
-			{
 				return new SolidColorBrush(color);
-			}
-			return new SolidColorBrush(Colors.Cyan); // Fallback
+			return new SolidColorBrush(Colors.Cyan);
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
-		{
+		public object ConvertBack(object value, Type targetType, object parameter, string language) => 
 			throw new NotImplementedException();
-		}
 	}
 
 	public class LayoutToVisibilityConverter : IValueConverter
@@ -126,19 +120,13 @@ namespace Pixel_Crosshair
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			if (value is string layout && parameter is string indexStr)
-			{
 				if (int.TryParse(indexStr, out int index) && index < layout.Length)
-				{
 					return layout[index] == '1' ? Visibility.Visible : Visibility.Collapsed;
-				}
-			}
 			return Visibility.Collapsed;
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
-		{
+		public object ConvertBack(object value, Type targetType, object parameter, string language) =>
 			throw new NotImplementedException();
-		}
 	}
 
 	public class LayoutToBoolConverter : IValueConverter
@@ -146,12 +134,8 @@ namespace Pixel_Crosshair
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			if (value is string layout && parameter is string indexStr)
-			{
 				if (int.TryParse(indexStr, out int index) && index < layout.Length)
-				{
 					return layout[index] == '1';
-				}
-			}
 			return false;
 		}
 

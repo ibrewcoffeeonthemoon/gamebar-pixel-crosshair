@@ -15,10 +15,10 @@ namespace Pixel_Crosshair
     /// </summary>
     public sealed partial class WidgetPage : Page
     {
-		// 
-		private readonly Store _store = null;
-		// Reference to the Xbox Game Bar widget instance
-		private XboxGameBarWidget widget = null;
+		// Ref to store
+		private readonly Store _store;
+		// Ref to the Xbox Game Bar widget instance
+		private XboxGameBarWidget _widget;
 
         public WidgetPage()
         {
@@ -81,31 +81,22 @@ namespace Pixel_Crosshair
 		protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 			// Get the widget instance
-			widget = e.Parameter as XboxGameBarWidget;
+			_widget = e.Parameter as XboxGameBarWidget;
 
 			// Initial update of UI based on current display mode
-			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
+			_widget.SettingsClicked += OnWidgetSettingsButtonClicked;
 
 			// listen to close request to clean up old event handlers from previous instances
-			widget.CloseRequested += OnWidgetCloseRequested;
+			_widget.CloseRequested += OnWidgetCloseRequested;
 		}
 
-        private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args)
-        {
-			// Unregister previous store
-			_store.Unregister();
-        }
+		// On widget closed, unregister previous store
+        private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args) => _store.Unregister();
 
-        private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e)
-        {
-			// Center the widget window on screen
-			await widget.CenterWindowAsync();
-        }
+		// On center app button clicked, center the widget window on screen
+        private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e) => await _widget.CenterWindowAsync();
 
-		private async void OnWidgetSettingsButtonClicked(XboxGameBarWidget sender, object args)
-		{
-			// Launch the settings page
-			await sender.ActivateSettingsAsync();
-		}
+		// On settings button clicked, launch the settings page
+		private async void OnWidgetSettingsButtonClicked(XboxGameBarWidget sender, object args) => await sender.ActivateSettingsAsync();
 	}
 }

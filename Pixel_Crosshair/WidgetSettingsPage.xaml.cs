@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
@@ -11,7 +12,8 @@ namespace Pixel_Crosshair
 	/// </summary>
 	public sealed partial class WidgetSettingsPage : Page
 	{
-		private readonly Store _store = null;
+		// Ref to store
+		private readonly Store _store;
 
 		public WidgetSettingsPage()
 		{
@@ -24,14 +26,8 @@ namespace Pixel_Crosshair
 			InitializePixelLayoutEditerGrid();
 
 			// Clean up when setting window closed 
-            Window.Current.Closed += Current_Closed;
+            Window.Current.Closed += OnWidgetSettingsPageWindowClosed;
 		}
-
-        private void Current_Closed(object sender, Windows.UI.Core.CoreWindowEventArgs e)
-        {
-			// Unsubscribe previous store 
-			_store.Unregister();
-        }
 
         private void InitializePixelLayoutEditerGrid()
 		{
@@ -65,10 +61,10 @@ namespace Pixel_Crosshair
 			}
 		}
 
-		private void OnPixelLayoutEditorClearButtonClicked(object sender, RoutedEventArgs e)
-		{
-			// Push the new state back to the store
-			_store.CrosshairLayout = new string('0', 100);
-		}
+		// On windows close, unsubscribe previous store 
+        private void OnWidgetSettingsPageWindowClosed(object sender, CoreWindowEventArgs e) => _store.Unregister();
+
+		// On clear button clicked, push the default layout state back to the store
+		private void OnPixelLayoutEditorClearButtonClicked(object sender, RoutedEventArgs e) => _store.CrosshairLayout = new string('0', 100);
 	}
 }
