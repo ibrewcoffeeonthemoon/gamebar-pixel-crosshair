@@ -4,6 +4,7 @@ using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
@@ -19,11 +20,17 @@ namespace Pixel_Crosshair
     /// </summary>
     public sealed partial class WidgetPage : Page
     {
+		// 
+		private readonly Store _store = null;
 		// Reference to the Xbox Game Bar widget instance
 		private XboxGameBarWidget widget = null;
 
         public WidgetPage()
         {
+			// Initialize Store and bind to DataContext
+			_store = new Store(this);
+			DataContext = _store;
+
 			// Initialize the XAML components
 			this.InitializeComponent();
 			InitializeCrosshairGrid();
@@ -53,6 +60,13 @@ namespace Pixel_Crosshair
 					Height = 1,
 					Visibility = Visibility.Collapsed
 				};
+				// Binding to CrosshairColor of store
+				rect.SetBinding(Rectangle.FillProperty, new Binding 
+				{ 
+					Source = _store,
+					Path = new PropertyPath("CrosshairColor"),
+					Converter = new ColorToBrushConverter(),
+				});
 				// Position the Rectangle in the grid
 				Grid.SetRow(rect, i / 10);
 				Grid.SetColumn(rect, i % 10);
@@ -120,7 +134,7 @@ namespace Pixel_Crosshair
 					if (CrosshairGrid.Children[i] is Rectangle rect)
 					{
 						// Update Color
-						rect.Fill = brush;
+						//rect.Fill = brush;
 						// Update Visibility (Shape)
 						rect.Visibility = (matrixStr[i] == '1') ? Visibility.Visible : Visibility.Collapsed;
 					}
