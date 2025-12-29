@@ -13,8 +13,14 @@ namespace Pixel_Crosshair
 	/// </summary>
 	public sealed partial class WidgetSettingsPage : Page
 	{
+		private readonly Store _store = null;
+
 		public WidgetSettingsPage()
 		{
+			// Initialize Store and bind to DataContext
+			_store = new Store(this);
+			DataContext = _store;
+
 			// Initialize the XAML components
 			this.InitializeComponent();
 			InitializePixelLayoutEditerGrid();
