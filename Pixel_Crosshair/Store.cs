@@ -145,9 +145,27 @@ namespace Pixel_Crosshair
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
-			// We don't strictly need ConvertBack because we will handle 
-			// the Click event manually to update the string.
-			return DependencyProperty.UnsetValue;
+			if (value is bool isChecked && parameter is string indexStr)
+			{
+				int index = int.Parse(indexStr);
+				var settings = ApplicationData.Current.LocalSettings;
+
+				// Get the latest string directly from storage
+				string currentLayout = settings.Values["CrosshairLayout"]?.ToString() ?? new string('0', 100);
+
+				// Modify the bit
+				char[] chars = currentLayout.ToCharArray();
+				if (index < chars.Length)
+				{
+					chars[index] = isChecked ? '1' : '0';
+					string nextLayout = new string(chars);
+
+					// 3. Return the WHOLE string. 
+					// The Binding engine will push this into Store.CrosshairLayout
+					return nextLayout;
+				}
+			}
+			return null;
 		}
 	}
 }

@@ -50,50 +50,25 @@ namespace Pixel_Crosshair
 					Margin = new Thickness(0),
 					Tag = i // Store the index (0-99) to identify the pixel later
 				};
-				// Binding to CrosshairLayout, OneWay
+				// Binding to CrosshairLayout
 				cb.SetBinding(CheckBox.IsCheckedProperty, new Binding
 				{
 					Source = _store,
 					Path = new PropertyPath("CrosshairLayout"),
 					Converter = new LayoutToBoolConverter(),
 					ConverterParameter = i.ToString(),
-					Mode = BindingMode.OneWay,
+					// Must use TwoWay binding, otherwise the checkbox will auto unregister binding upon user click
+					Mode = BindingMode.TwoWay,
 				});
-				// 
-				cb.Click += OnPixelCheckboxClick;
 				// Position the CheckBox in the grid
 				PixelLayoutEditorGrid.Children.Add(cb);
 			}
-		}
-
-		private void OnPixelCheckboxClick(object sender, RoutedEventArgs e)
-		{
-			var cb = sender as CheckBox;
-			int index = (int)cb.Tag; // Which pixel was clicked?
-
-			// Get the current state from the store instance
-			char[] layout = _store.CrosshairLayout.ToCharArray();
-
-			// Update the specific bit (The "Reducer" step)
-			layout[index] = (cb.IsChecked == true) ? '1' : '0';
-
-			// Push the new state back to the store
-			_store.CrosshairLayout = new string(layout);
 		}
 
 		private void OnPixelLayoutEditorClearButtonClicked(object sender, RoutedEventArgs e)
 		{
 			// Push the new state back to the store
 			_store.CrosshairLayout = new string('0', 100);
-			// Manually clear the checkbox (dirty hack)
-			string layout = _store.CrosshairLayout;
-			for (int i = 0; i < PixelLayoutEditorGrid.Children.Count; i++)
-			{
-				if (PixelLayoutEditorGrid.Children[i] is CheckBox cb)
-				{
-					cb.IsChecked = layout[i] == '1';
-				}
-			}
 		}
 	}
 }
