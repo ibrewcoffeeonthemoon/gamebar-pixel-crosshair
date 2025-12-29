@@ -67,24 +67,19 @@ namespace Pixel_Crosshair
 			}
 			set
 			{
-				// Only update if the string actually changed
-				if (!_settings.Values.ContainsKey("CrosshairLayout") || _settings.Values["CrosshairLayout"].ToString() != value)
-				{
-					// Store the value as a string into storage
-					_settings.Values["CrosshairLayout"] = value;
-					Debug.WriteLine($"[Store] CrosshairLayout set to {value}");
+				// Store the value as a string into storage
+				_settings.Values["CrosshairLayout"] = value;
+				Debug.WriteLine($"[Store] CrosshairLayout set to {value}");
 
-					// Trigger SignalDataChanged event
-					ApplicationData.Current.SignalDataChanged();
-				}
+				// Trigger SignalDataChanged event
+				ApplicationData.Current.SignalDataChanged();
 			}
 		}
 
 		private void OnApplicationDataChanged(ApplicationData sender, object args)
 		{
 			// Read and update everything possible variable
-			OnPropertyChanged(nameof(CrosshairColor));
-			OnPropertyChanged(nameof(CrosshairLayout));
+			OnPropertyChanged(string.Empty);
 		}
 
 		protected void OnPropertyChanged(string name)
@@ -140,7 +135,6 @@ namespace Pixel_Crosshair
 		{
 			if (value is string layout && parameter is string indexStr)
 			{
-				Debug.WriteLine(layout);
 				if (int.TryParse(indexStr, out int index) && index < layout.Length)
 				{
 					return layout[index] == '1';

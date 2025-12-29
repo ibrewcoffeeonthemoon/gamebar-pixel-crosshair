@@ -83,8 +83,17 @@ namespace Pixel_Crosshair
 
 		private void OnPixelLayoutEditorClearButtonClicked(object sender, RoutedEventArgs e)
 		{
-			//
+			// Push the new state back to the store
 			_store.CrosshairLayout = new string('0', 100);
+			// Manually clear the checkbox (dirty hack)
+			string layout = _store.CrosshairLayout;
+			for (int i = 0; i < PixelLayoutEditorGrid.Children.Count; i++)
+			{
+				if (PixelLayoutEditorGrid.Children[i] is CheckBox cb)
+				{
+					cb.IsChecked = layout[i] == '1';
+				}
+			}
 		}
 	}
 }
