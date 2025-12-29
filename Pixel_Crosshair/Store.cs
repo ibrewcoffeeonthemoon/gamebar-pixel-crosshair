@@ -1,9 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Windows.Storage;
 using Windows.UI;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 namespace Pixel_Crosshair
 {
@@ -40,7 +43,7 @@ namespace Pixel_Crosshair
 			settings.Values["CrosshairColor"] = CrosshairColor.ToString();
 
 			// Notify other windows (Widget <-> Settings)
-			ApplicationData.Current.SignalDataChanged();
+			//ApplicationData.Current.SignalDataChanged();
 		}
 
 		private void LoadFromSettings()
@@ -58,9 +61,30 @@ namespace Pixel_Crosshair
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-		protected void OnPropertyChanged([CallerMemberName] string name = null)
+		protected async void OnPropertyChanged([CallerMemberName] string name = null)
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+			var dispatcher = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().Dispatcher;
+			await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+			});
+		}
+	}
+
+	public class ColorToBrushConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, string language)
+		{
+			if (value is Color color)
+			{
+				return new SolidColorBrush(color);
+			}
+			return new SolidColorBrush(Colors.Cyan); // Fallback
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

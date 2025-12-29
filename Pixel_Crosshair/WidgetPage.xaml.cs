@@ -4,6 +4,7 @@ using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
@@ -26,6 +27,7 @@ namespace Pixel_Crosshair
         {
 			// Initialize the XAML components
 			this.InitializeComponent();
+			this.DataContext = Store.Instance;
 			InitializeCrosshairGrid();
         }
 
@@ -53,6 +55,13 @@ namespace Pixel_Crosshair
 					Height = 1,
 					Visibility = Visibility.Collapsed
 				};
+				// Bind the Fill property to the CrosshairColor in the Store using the ColorToBrushConverter
+				rect.SetBinding(Rectangle.FillProperty, new Binding
+				{
+					Source = Store.Instance,
+					Path = new PropertyPath("CrosshairColor"),
+					Converter = new ColorToBrushConverter(),
+				});
 				// Position the Rectangle in the grid
 				Grid.SetRow(rect, i / 10);
 				Grid.SetColumn(rect, i % 10);
@@ -70,10 +79,10 @@ namespace Pixel_Crosshair
 			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
 
 			// listen to application data changes
-			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
+			//ApplicationData.Current.DataChanged += OnApplicationDataChanged;
 
 			// simulate a data change to load initial settings
-			ApplicationData.Current.SignalDataChanged();
+			//ApplicationData.Current.SignalDataChanged();
 
 			// listen to close request to clean up old event handlers from previous instances
 			widget.CloseRequested += OnWidgetCloseRequested;
@@ -82,7 +91,7 @@ namespace Pixel_Crosshair
         private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args)
         {
 			// Must clean up old event handlers to avoid multiple subscriptions when the widget is reopened
-			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
+			//ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
         }
 
         private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e)
