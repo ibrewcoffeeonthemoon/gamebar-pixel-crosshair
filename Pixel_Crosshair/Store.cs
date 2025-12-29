@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
@@ -52,7 +53,33 @@ namespace Pixel_Crosshair
 			}
 		}
 
-        private void OnApplicationDataChanged(ApplicationData sender, object args)
+		public string CrosshairLayout
+		{
+			get
+			{
+				// Default value if not set
+				if (!_settings.Values.ContainsKey("CrosshairLayout"))
+				{
+					return new string('1', 100);
+				}
+				// Read the zeros and ones string and return
+				return _settings.Values["CrosshairLayout"].ToString();
+			}
+			set
+			{
+				// Only update if the string actually changed
+				if (!_settings.Values.ContainsKey("CrosshairLayout") || _settings.Values["CrosshairLayout"].ToString() != value)
+				{
+					// Store the value as a string into storage
+					_settings.Values["CrosshairLayout"] = value;
+
+					// Trigger SignalDataChanged event
+					ApplicationData.Current.SignalDataChanged();
+				}
+			}
+		}
+
+		private void OnApplicationDataChanged(ApplicationData sender, object args)
 		{
 			// Read and update everything possible variable
 			OnPropertyChanged(nameof(CrosshairColor));
@@ -77,6 +104,26 @@ namespace Pixel_Crosshair
 				return new SolidColorBrush(color);
 			}
 			return new SolidColorBrush(Colors.Cyan); // Fallback
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class LayoutToVisibilityConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, string language)
+		{
+			if (value is string layout && parameter is string indexStr)
+			{
+				if (int.TryParse(indexStr, out int index) && index < layout.Length)
+				{
+					return layout[index] == '1' ? Visibility.Visible : Visibility.Collapsed;
+				}
+			}
+			return Visibility.Collapsed;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language)

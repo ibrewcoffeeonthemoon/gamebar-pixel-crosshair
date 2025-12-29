@@ -1,13 +1,8 @@
 ﻿using System;
 using Microsoft.Gaming.XboxGameBar;
-using Windows.Storage;
-using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 
@@ -58,7 +53,7 @@ namespace Pixel_Crosshair
 				{
 					Width = 1,
 					Height = 1,
-					Visibility = Visibility.Visible,
+					Visibility = Visibility.Collapsed,
 				};
 				// Binding to CrosshairColor of store
 				rect.SetBinding(Rectangle.FillProperty, new Binding 
@@ -66,6 +61,14 @@ namespace Pixel_Crosshair
 					Source = _store,
 					Path = new PropertyPath("CrosshairColor"),
 					Converter = new ColorToBrushConverter(),
+				});
+				// Binding to CrosshairLayout of store
+				rect.SetBinding(Rectangle.VisibilityProperty, new Binding
+				{
+					Source = _store,
+					Path = new PropertyPath("CrosshairLayout"),
+					Converter = new LayoutToVisibilityConverter(),
+					ConverterParameter = i.ToString()
 				});
 				// Position the Rectangle in the grid
 				Grid.SetRow(rect, i / 10);
@@ -104,36 +107,5 @@ namespace Pixel_Crosshair
 			// Launch the settings page
 			await sender.ActivateSettingsAsync();
 		}
-
-        private void OnApplicationDataChanged(ApplicationData sender, object args)
-        {
-			// Let the UI thread handle the update and also fetch the settings from application data
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				// Fetch data from application data and convert to SolidColorBrush object
-				var settings = ApplicationData.Current.LocalSettings;
-				string colorStr = settings.Values["CrosshairColor"].ToString();
-				var color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
-				var brush = new SolidColorBrush(color);
-
-				// Fetch matrix state from application data (or default to all '0's)
-				string matrixStr = settings.Values.ContainsKey("CrosshairLayout")
-					? settings.Values["CrosshairLayout"].ToString()
-					: new string('0', 100);
-
-				// Update UI, set all rectangles in the preview grid to the new brush and visibility based on matrix state
-				for (int i = 0; i < 100; i++)
-				{
-					// Get Rectangle at index i
-					if (CrosshairGrid.Children[i] is Rectangle rect)
-					{
-						// Update Color
-						//rect.Fill = brush;
-						// Update Visibility (Shape)
-						rect.Visibility = (matrixStr[i] == '1') ? Visibility.Visible : Visibility.Collapsed;
-					}
-				}
-			});
-        }
     }
 }
