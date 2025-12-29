@@ -15,8 +15,8 @@ namespace Pixel_Crosshair
 	public class Store : INotifyPropertyChanged
 	{
 		private readonly Page _page = null;
+		private readonly Settings _settings = new Settings();
 		public event PropertyChangedEventHandler PropertyChanged;
-		private readonly ApplicationDataContainer _settings = ApplicationData.Current.LocalSettings;
 
 		// Cache for properties value
 		private string _cachedCrosshairLayout = null;
@@ -24,11 +24,12 @@ namespace Pixel_Crosshair
 		public Store(Page page)
 		{
 			_page = page;
+
 			// Listen for "Broadcasts" from other windows
 			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
 
 			// Initialize the cached value of properties
-			_cachedCrosshairLayout = _settings.Values["CrosshairLayout"]?.ToString();
+			_cachedCrosshairLayout = CrosshairLayout;
 		}
 
         public void Unregister()
@@ -38,48 +39,14 @@ namespace Pixel_Crosshair
 
 		public Color CrosshairColor
 		{
-			get
-			{
-				// Default to Cyan if not set
-				if (!_settings.Values.ContainsKey("CrosshairColor"))
-					return Colors.Cyan;
-				// Read the color from storage, convert from string to Color then return
-				string colorStr = _settings.Values["CrosshairColor"].ToString();
-				Color color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
-				return color;
-			}
-			set
-			{
-				// Store the color as a string into storage
-				_settings.Values["CrosshairColor"] = value.ToString();
-				Debug.WriteLine($"[Store] CrosshairColor set to {value}");
-
-				// Trigger SignalDataChanged event
-				ApplicationData.Current.SignalDataChanged();
-			}
+			get => _settings.Get("CrosshairColor", Colors.Cyan);
+			set => _settings.Set("CrosshairColor", value);
 		}
 
 		public string CrosshairLayout
 		{
-			get
-			{
-				// Default value if not set
-				if (!_settings.Values.ContainsKey("CrosshairLayout"))
-				{
-					return new string('1', 100);
-				}
-				// Read the zeros and ones string and return
-				return _settings.Values["CrosshairLayout"].ToString();
-			}
-			set
-			{
-				// Store the value as a string into storage
-				_settings.Values["CrosshairLayout"] = value;
-				Debug.WriteLine($"[Store] CrosshairLayout set to {value}");
-
-				// Trigger SignalDataChanged event
-				ApplicationData.Current.SignalDataChanged();
-			}
+			get => _settings.Get("CrosshairLayout", new string('0', 100));
+			set => _settings.Set("CrosshairLayout", value);
 		}
 
 		private void OnApplicationDataChanged(ApplicationData sender, object args)
@@ -88,7 +55,7 @@ namespace Pixel_Crosshair
 			OnPropertyChanged(nameof(CrosshairColor));
 
 			// Check if currentLayout is different from cached layout
-			string currentLayout = _settings.Values["CrosshairLayout"]?.ToString();
+			string currentLayout = CrosshairLayout;
 			if (currentLayout != _cachedCrosshairLayout)
 			{
 				// Only fire event if layout has been updated
@@ -105,6 +72,35 @@ namespace Pixel_Crosshair
 			{
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 			});
+		}
+	}
+
+	public class Settings
+	{
+		// Local settings application data container
+		private readonly ApplicationDataContainer _ctn = ApplicationData.Current.LocalSettings;
+
+		public T Get<T>(string key, T defaultValue)
+		{
+			// Default value
+			if (!_ctn.Values.ContainsKey(key))
+				return defaultValue;
+			// Get the dict as string
+			string valueStr = _ctn.Values[key].ToString();
+			// If type T is string already, return it
+			if (typeof(T) == typeof(string))
+				return (T)(object)valueStr;
+			// otherwise convert to type T
+			return (T)XamlBindingHelper.ConvertValue(typeof(T), valueStr);
+		}
+
+		public void Set(string key, object value)
+		{
+			// Set dict value as value to string
+			_ctn.Values[key] = value.ToString();
+			Debug.WriteLine($"[Store] {key} set to {value}");
+			// Then signal data changed
+			ApplicationData.Current.SignalDataChanged();
 		}
 	}
 
