@@ -18,11 +18,17 @@ namespace Pixel_Crosshair
 		public event PropertyChangedEventHandler PropertyChanged;
 		private readonly ApplicationDataContainer _settings = ApplicationData.Current.LocalSettings;
 
+		// Cache for properties value
+		private string _cachedCrosshairLayout = null;
+
 		public Store(Page page)
 		{
 			_page = page;
 			// Listen for "Broadcasts" from other windows
 			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
+
+			// Initialize the cached value of properties
+			_cachedCrosshairLayout = _settings.Values["CrosshairLayout"]?.ToString();
 		}
 
         public void Unregister()
@@ -79,7 +85,17 @@ namespace Pixel_Crosshair
 		private void OnApplicationDataChanged(ApplicationData sender, object args)
 		{
 			// Read and update everything possible variable
-			OnPropertyChanged(string.Empty);
+			OnPropertyChanged(nameof(CrosshairColor));
+
+			// Check if currentLayout is different from cached layout
+			string currentLayout = _settings.Values["CrosshairLayout"]?.ToString();
+			if (currentLayout != _cachedCrosshairLayout)
+			{
+				// Only fire event if layout has been updated
+				OnPropertyChanged(nameof(CrosshairLayout));
+				// Update the cached value
+				_cachedCrosshairLayout = currentLayout;
+			}
 		}
 
 		protected void OnPropertyChanged(string name)
