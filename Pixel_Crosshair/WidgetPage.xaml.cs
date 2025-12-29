@@ -58,7 +58,7 @@ namespace Pixel_Crosshair
 				{
 					Width = 1,
 					Height = 1,
-					Visibility = Visibility.Collapsed
+					Visibility = Visibility.Visible,
 				};
 				// Binding to CrosshairColor of store
 				rect.SetBinding(Rectangle.FillProperty, new Binding 
@@ -83,20 +83,14 @@ namespace Pixel_Crosshair
 			// Initial update of UI based on current display mode
 			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
 
-			// listen to application data changes
-			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
-
-			// simulate a data change to load initial settings
-			ApplicationData.Current.SignalDataChanged();
-
 			// listen to close request to clean up old event handlers from previous instances
 			widget.CloseRequested += OnWidgetCloseRequested;
 		}
 
         private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args)
         {
-			// Must clean up old event handlers to avoid multiple subscriptions when the widget is reopened
-			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
+			// Unregister previous store
+			_store.Unregister();
         }
 
         private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e)

@@ -24,6 +24,11 @@ namespace Pixel_Crosshair
 			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
 		}
 
+        public void Unregister()
+		{
+			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
+		}
+
 		public Color CrosshairColor
 		{
 			get

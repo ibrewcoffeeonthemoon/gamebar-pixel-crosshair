@@ -27,9 +27,18 @@ namespace Pixel_Crosshair
 
 			// Load settings from storage when the page is initialized
 			LoadSettings();
+
+			// Clean up when setting window closed 
+            Window.Current.Closed += Current_Closed;
 		}
 
-		private void InitializePixelLayoutEditerGrid()
+        private void Current_Closed(object sender, Windows.UI.Core.CoreWindowEventArgs e)
+        {
+			// Unsubscribe previous store 
+			_store.Unregister();
+        }
+
+        private void InitializePixelLayoutEditerGrid()
 		{
 			// Clear any existing definitions
 			PixelLayoutEditorGrid.Children.Clear();
@@ -59,15 +68,6 @@ namespace Pixel_Crosshair
 			// Get settings from storage
 			var settings = ApplicationData.Current.LocalSettings;
 
-			// Restore ColorPicker State
-			if (settings.Values.ContainsKey("CrosshairColor"))
-			{
-				// Get saved color string, convert to Color and set ColorPicker
-				string colorStr = settings.Values["CrosshairColor"].ToString();
-				var color = (Color)Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
-				PixelColorPicker.Color = color;
-			}
-
 			// Restore Matrix/Layout State
 			if (settings.Values.ContainsKey("CrosshairLayout"))
 			{
@@ -89,16 +89,6 @@ namespace Pixel_Crosshair
 					}
 				}
 			}
-		}
-
-		private async void OnColorPickerColorChanged(object sender, ColorChangedEventArgs e)
-		{
-			// Save user selected color to storage
-			var settings = ApplicationData.Current.LocalSettings;
-			settings.Values["CrosshairColor"] = PixelColorPicker.Color.ToString();
-
-			// Signal that application data has changed
-			ApplicationData.Current.SignalDataChanged();
 		}
 
 		private void OnPixelLayoutEditorCheckboxToggled(object sender, RoutedEventArgs e)
