@@ -31,11 +31,14 @@ namespace Pixel_Crosshair
 
         private void InitializePixelLayoutEditerGrid()
 		{
+			// Define max row or cols
+			PixelLayoutEditorGrid.MaximumRowsOrColumns = Store.GridSize;
+
 			// Clear any existing definitions
 			PixelLayoutEditorGrid.Children.Clear();
 
-			// Create the 10x10 coordinate system
-			for (int i = 0; i < 100; i++)
+			// Create the coordinate system
+			for (int i = 0; i < Store.TotalPixels; i++)
 			{
 				// Create a CheckBox for each pixel
 				CheckBox cb = new CheckBox
@@ -44,7 +47,7 @@ namespace Pixel_Crosshair
 					MinHeight = 0,
 					Padding = new Thickness(0),
 					Margin = new Thickness(0),
-					Tag = i // Store the index (0-99) to identify the pixel later
+					Tag = i // Store the index to identify the pixel later
 				};
 				// Binding to CrosshairLayout
 				cb.SetBinding(CheckBox.IsCheckedProperty, new Binding
@@ -65,6 +68,6 @@ namespace Pixel_Crosshair
         private void OnWidgetSettingsPageWindowClosed(object sender, CoreWindowEventArgs e) => _store.Unregister();
 
 		// On clear button clicked, push the default layout state back to the store
-		private void OnPixelLayoutEditorClearButtonClicked(object sender, RoutedEventArgs e) => _store.CrosshairLayout = new string('0', 100);
+		private void OnPixelLayoutEditorClearButtonClicked(object sender, RoutedEventArgs e) => _store.CrosshairLayout = new string('0', Store.TotalPixels);
 	}
 }

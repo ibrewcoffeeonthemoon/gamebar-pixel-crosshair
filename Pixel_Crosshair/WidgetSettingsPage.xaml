@@ -38,7 +38,6 @@
 			>
 			<VariableSizedWrapGrid 
                 x:Name="PixelLayoutEditorGrid"
-                MaximumRowsOrColumns="10" 
                 Orientation="Horizontal"
                 ItemWidth="25" 
                 ItemHeight="25" />

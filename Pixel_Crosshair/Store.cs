@@ -14,6 +14,11 @@ namespace Pixel_Crosshair
 {
 	public class Store : INotifyPropertyChanged
 	{
+		// Constants
+		public const int GridSize = 16;
+		public const int TotalPixels = GridSize * GridSize;
+
+		// Refs
 		private readonly Page _page = null;
 		private readonly Settings _settings = new Settings();
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -45,7 +50,7 @@ namespace Pixel_Crosshair
 		// property
 		public string CrosshairLayout
 		{
-			get => _settings.Get("CrosshairLayout", new string('0', 100));
+			get => _settings.Get("CrosshairLayout", new string('0', TotalPixels));
 			set => _settings.Set("CrosshairLayout", value);
 		}
 
@@ -147,7 +152,7 @@ namespace Pixel_Crosshair
 				var settings = ApplicationData.Current.LocalSettings;
 
 				// Get the latest string directly from storage
-				string currentLayout = settings.Values["CrosshairLayout"]?.ToString() ?? new string('0', 100);
+				string currentLayout = settings.Values["CrosshairLayout"]?.ToString() ?? new string('0', Store.TotalPixels);
 
 				// Modify the bit
 				char[] chars = currentLayout.ToCharArray();

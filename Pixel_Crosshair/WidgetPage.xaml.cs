@@ -33,20 +33,24 @@ namespace Pixel_Crosshair
 
 		private void InitializeCrosshairGrid()
 		{
+			// Set grid width and height
+			CrosshairGrid.Width = Store.GridSize;
+			CrosshairGrid.Height = Store.GridSize;
+
 			// Clear any existing definitions
 			CrosshairGrid.Children.Clear();
 			CrosshairGrid.RowDefinitions.Clear();
 			CrosshairGrid.ColumnDefinitions.Clear();
 			// Create the 10x10 coordinate system
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < Store.GridSize; i++)
 			{
 				// Add Row and Column definitions, each 1 pixel in size
 				CrosshairGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Pixel) });
 				CrosshairGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Pixel) });
 			}
 
-			// Populate with 100 hidden pixel rectangles
-			for (int i = 0; i < 100; i++)
+			// Populate with hidden pixel rectangles
+			for (int i = 0; i < Store.TotalPixels; i++)
 			{
 				// Create a Rectangle for each pixel
 				var rect = new Rectangle
@@ -71,8 +75,8 @@ namespace Pixel_Crosshair
 					ConverterParameter = i.ToString()
 				});
 				// Position the Rectangle in the grid
-				Grid.SetRow(rect, i / 10);
-				Grid.SetColumn(rect, i % 10);
+				Grid.SetRow(rect, i / Store.GridSize);
+				Grid.SetColumn(rect, i % Store.GridSize);
 				// Add to the grid
 				CrosshairGrid.Children.Add(rect);
 			}

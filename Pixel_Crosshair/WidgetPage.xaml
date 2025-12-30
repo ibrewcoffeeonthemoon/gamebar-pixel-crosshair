@@ -22,8 +22,6 @@
 				HorizontalAlignment="Center" 
 				VerticalAlignment="Center" 
 				Background="Transparent"
-				Width="10" 
-				Height="10"
 				IsHitTestVisible="False">
 			</Grid>
 		</Button>
