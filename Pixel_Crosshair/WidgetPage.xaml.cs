@@ -1,12 +1,8 @@
 ﻿using System;
 using Microsoft.Gaming.XboxGameBar;
-using Windows.Storage;
-using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 
@@ -19,11 +15,17 @@ namespace Pixel_Crosshair
     /// </summary>
     public sealed partial class WidgetPage : Page
     {
-		// Reference to the Xbox Game Bar widget instance
-		private XboxGameBarWidget widget = null;
+		// Ref to store
+		private readonly Store _store;
+		// Ref to the Xbox Game Bar widget instance
+		private XboxGameBarWidget _widget;
 
         public WidgetPage()
         {
+			// Initialize Store and bind to DataContext
+			_store = new Store(this);
+			DataContext = _store;
+
 			// Initialize the XAML components
 			this.InitializeComponent();
 			InitializeCrosshairGrid();
@@ -51,8 +53,23 @@ namespace Pixel_Crosshair
 				{
 					Width = 1,
 					Height = 1,
-					Visibility = Visibility.Collapsed
+					Visibility = Visibility.Collapsed,
 				};
+				// Binding to CrosshairColor of store
+				rect.SetBinding(Rectangle.FillProperty, new Binding 
+				{ 
+					Source = _store,
+					Path = new PropertyPath("CrosshairColor"),
+					Converter = new ColorToBrushConverter(),
+				});
+				// Binding to CrosshairLayout of store
+				rect.SetBinding(Rectangle.VisibilityProperty, new Binding
+				{
+					Source = _store,
+					Path = new PropertyPath("CrosshairLayout"),
+					Converter = new LayoutToVisibilityConverter(),
+					ConverterParameter = i.ToString()
+				});
 				// Position the Rectangle in the grid
 				Grid.SetRow(rect, i / 10);
 				Grid.SetColumn(rect, i % 10);
@@ -64,68 +81,22 @@ namespace Pixel_Crosshair
 		protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 			// Get the widget instance
-			widget = e.Parameter as XboxGameBarWidget;
+			_widget = e.Parameter as XboxGameBarWidget;
 
 			// Initial update of UI based on current display mode
-			widget.SettingsClicked += OnWidgetSettingsButtonClicked;
-
-			// listen to application data changes
-			ApplicationData.Current.DataChanged += OnApplicationDataChanged;
-
-			// simulate a data change to load initial settings
-			ApplicationData.Current.SignalDataChanged();
+			_widget.SettingsClicked += OnWidgetSettingsButtonClicked;
 
 			// listen to close request to clean up old event handlers from previous instances
-			widget.CloseRequested += OnWidgetCloseRequested;
+			_widget.CloseRequested += OnWidgetCloseRequested;
 		}
 
-        private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args)
-        {
-			// Must clean up old event handlers to avoid multiple subscriptions when the widget is reopened
-			ApplicationData.Current.DataChanged -= OnApplicationDataChanged;
-        }
+		// On widget closed, unregister previous store
+        private void OnWidgetCloseRequested(XboxGameBarWidget sender, XboxGameBarWidgetCloseRequestedEventArgs args) => _store.Unregister();
 
-        private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e)
-        {
-			// Center the widget window on screen
-			await widget.CenterWindowAsync();
-        }
+		// On center app button clicked, center the widget window on screen
+        private async void OnCenterAppButtonClick(object sender, RoutedEventArgs e) => await _widget.CenterWindowAsync();
 
-		private async void OnWidgetSettingsButtonClicked(XboxGameBarWidget sender, object args)
-		{
-			// Launch the settings page
-			await sender.ActivateSettingsAsync();
-		}
-
-        private void OnApplicationDataChanged(ApplicationData sender, object args)
-        {
-			// Let the UI thread handle the update and also fetch the settings from application data
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				// Fetch data from application data and convert to SolidColorBrush object
-				var settings = ApplicationData.Current.LocalSettings;
-				string colorStr = settings.Values["CrosshairColor"].ToString();
-				var color = (Color)XamlBindingHelper.ConvertValue(typeof(Color), colorStr);
-				var brush = new SolidColorBrush(color);
-
-				// Fetch matrix state from application data (or default to all '0's)
-				string matrixStr = settings.Values.ContainsKey("CrosshairLayout")
-					? settings.Values["CrosshairLayout"].ToString()
-					: new string('0', 100);
-
-				// Update UI, set all rectangles in the preview grid to the new brush and visibility based on matrix state
-				for (int i = 0; i < 100; i++)
-				{
-					// Get Rectangle at index i
-					if (CrosshairGrid.Children[i] is Rectangle rect)
-					{
-						// Update Color
-						rect.Fill = brush;
-						// Update Visibility (Shape)
-						rect.Visibility = (matrixStr[i] == '1') ? Visibility.Visible : Visibility.Collapsed;
-					}
-				}
-			});
-        }
-    }
+		// On settings button clicked, launch the settings page
+		private async void OnWidgetSettingsButtonClicked(XboxGameBarWidget sender, object args) => await sender.ActivateSettingsAsync();
+	}
 }

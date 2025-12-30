@@ -26,7 +26,7 @@
 				IsColorChannelTextInputVisible="True"
 				IsColorSpectrumVisible="True"
 				ColorSpectrumShape="Box"
-				ColorChanged="OnColorPickerColorChanged"
+				Color="{Binding CrosshairColor, Mode=TwoWay}"
 				/>
 		</StackPanel>
 		<StackPanel
